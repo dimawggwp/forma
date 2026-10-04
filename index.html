@@ -746,7 +746,7 @@ select.inp option{background:#151515}
 setTimeout(() => {
   if (!window.supabase) {
     const bd = document.body || document.documentElement;
-    if (!bd.innerHTML.includes('FORMA.')) {
+    if (typeof S === 'undefined' || !S.user) {
       bd.innerHTML = '<div style="color:#fff;padding:40px;font-family:system-ui;background:#0A0A0A;min-height:100vh"><h1 style="margin:0;color:#D4FF3F">⚠️ Не работает</h1><p style="color:#888;margin-top:10px">CDN не загрузился. Попробуй:</p><ul style="color:#888"><li>Закрой и открой снова</li><li>Проверь интернет</li><li>Используй демо-режим после загрузки</li></ul><button onclick="location.reload()" style="background:#D4FF3F;color:#000;border:0;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:600;margin-top:20px">Обновить</button></div>';
     }
   }
@@ -1565,7 +1565,7 @@ function parseRoute(){
   S.route = { name: name || 'feed', a, b };
 }
 window.addEventListener('hashchange', () => { parseRoute(); if (S.user) renderView(); window.scrollTo(0, 0); });
-const go = h => { location.hash = h; };
+// [dup removed] const go = h => { location.hash = h; };
 
 function render(){
   document.documentElement.lang = LANG;
@@ -1574,7 +1574,7 @@ function render(){
   $('#app').innerHTML = shellView();
   renderView(); renderSide();
 }
-let viewSeq = 0;
+// [dup removed] let viewSeq = 0;
 async function renderView(){
   const seq = ++viewSeq;
   const v = VIEWS[S.route.name] || VIEWS.feed;
@@ -1591,8 +1591,8 @@ async function renderView(){
     if (seq === viewSeq) host.innerHTML = `<div class="empty"><div class="big">${t('error')}</div><div>${esc(e.message || '')}</div></div>`;
   }
 }
-const refresh = () => renderView();
-const loaderHTML = () => `<div class="pad stack">${[1,2,3].map(() => `<div class="row" style="gap:12px;align-items:flex-start"><div class="skel" style="width:40px;height:40px;border-radius:50%"></div><div style="flex:1" class="stack"><div class="skel" style="height:14px;width:40%"></div><div class="skel" style="height:14px;width:90%"></div><div class="skel" style="height:14px;width:70%"></div></div></div>`).join('')}</div>`;
+// [dup removed] const refresh = () => renderView();
+// [dup removed] const loaderHTML = () => `<div class="pad stack">${[1,2,3].map(() => `<div class="row" style="gap:12px;align-items:flex-start"><div class="skel" style="width:40px;height:40px;border-radius:50%"></div><div style="flex:1" class="stack"><div class="skel" style="height:14px;width:40%"></div><div class="skel" style="height:14px;width:90%"></div><div class="skel" style="height:14px;width:70%"></div></div></div>`).join('')}</div>`;
 
 function shellView(){
   const nav = [['feed','home'],['explore','search'],['coach','bot'],['nutrition','apple_food'],['workouts','dumbbell'],['library','book'],['messages','chat'],['profile','user']];
@@ -1630,7 +1630,7 @@ function shellView(){
     <button data-act="menu">${avatar(S.user,'xs')}</button>
   </nav>`;
 }
-const railBtn = (n, i) => `<a class="rbtn" data-nav="${n}" href="#/${n}" aria-label="${t(n)}">${icon(i)}${n === 'messages' && S.unread ? '<span class="dot"></span>' : ''}<span class="tip">${t(n)}</span></a>`;
+// [dup removed] const railBtn = (n, i) => `<a class="rbtn" data-nav="${n}" href="#/${n}" aria-label="${t(n)}">${icon(i)}${n === 'messages' && S.unread ? '<span class="dot"></span>' : ''}<span class="tip">${t(n)}</span></a>`;
 
 async function renderSide(){
   const el = $('#side'); if (!el || getComputedStyle(el).display === 'none') return;
@@ -1741,8 +1741,8 @@ function emailForm(){
 /* =============================================================================
    15. VIEWS: FEED / POST / EXPLORE / PROFILE
    ============================================================================= */
-const TAGS = ['tip','achievement','rule','question','progress'];
-const tagBadge = tg => tg ? `<span class="tag ${tg}">${t(tg)}</span>` : '';
+// [dup removed] const TAGS = ['tip','achievement','rule','question','progress'];
+// [dup removed] const tagBadge = tg => tg ? `<span class="tag ${tg}">${t(tg)}</span>` : '';
 function userRow(p){
   const f = S.following.has(p.id);
   return `<div class="urow"><a href="#/profile/${p.id}">${avatar(p)}</a><a class="t" href="#/profile/${p.id}"><b>${esc(p.name)}${verified(p)}</b><span>@${esc(p.username)}${S.followers.has(p.id) ? ' · ' + t('you_follow') : ''}</span></a>
@@ -1813,7 +1813,7 @@ VIEWS.feed = {
       ${posts.length ? posts.map(p => postCard(p)).join('') : `<div class="empty"><div class="big">${t('noPosts')}</div><div>${S.feedTab === 'following' ? t('noFollowing') : t('noPostsS')}</div></div>`}`;
   }
 };
-const score = p => { const hrs = (Date.now() - new Date(p.created_at)) / 36e5; return ((p._likes||0) * 2 + (p._replies||0) * 3 + 4) / Math.pow(hrs + 2, 1.3); };
+// [dup removed] const score = p => { const hrs = (Date.now() - new Date(p.created_at)) / 36e5; return ((p._likes||0) * 2 + (p._replies||0) * 3 + 4) / Math.pow(hrs + 2, 1.3); };
 
 VIEWS.post = {
   async render(id){
@@ -2357,12 +2357,13 @@ function modal(html, cls=''){
   setTimeout(() => { const m = ovl.querySelector('.modal'); if (m) bindForm(m); }, 30);
 }
 const bindAutosize = () => $$('textarea[data-autosize]').forEach(ta => { const f = () => { ta.style.height = '1px'; ta.style.height = (ta.scrollHeight + 2) + 'px'; }; f(); ta.addEventListener('input', f); });
-document.addEventListener('click', e => {
+document.addEventListener('click', async e => {
   const a = e.target.closest('[data-act]');
   if (!a) return; e.preventDefault(); e.stopImmediatePropagation();
   const act = a.dataset.act, me_ = me();
   if (!me_ && !['demo','oauth','authMode','emailTab','phoneBack','compose','attachImg','setLang'].includes(act)) return;
   {
+    if (typeof EXTRA_ACTS !== 'undefined' && EXTRA_ACTS[act]) return EXTRA_ACTS[act](a, me_);
     if (act === 'nav') return S.route.name !== a.dataset.nav && (location.hash = '#/' + a.dataset.nav);
     if (act === 'demo') return startDemo();
     if (act === 'oauth') return oauth(a.dataset.p);
@@ -2374,7 +2375,7 @@ document.addEventListener('click', e => {
     if (act === 'back') return history.back();
     if (act === 'openPost') return go('#/post/' + a.dataset.id);
     if (act === 'compose') return modal(composerHTML('post'), ''), bindAutosize();
-    if (act === 'attachImg') return pickFile('image/*').then(f => { if (f) compressImage(f, 800, .8).then(r => S.composeImg[a.dataset.ctx] = { url:r.dataUrl, blob:r.blob }, render()).catch(() => S.composeImg[a.dataset.ctx] = null); });
+    if (act === 'attachImg') return pickFile('image/*').then(f => { if (f) compressImage(f, 800, .8).then(r => { S.composeImg[a.dataset.ctx] = { url:r.dataUrl, blob:r.blob }; renderView(); }).catch(() => S.composeImg[a.dataset.ctx] = null); });
     if (act === 'rmImg') return S.composeImg[a.dataset.ctx] = {}, renderView();
     if (act === 'pickTag') return a.classList.toggle('on');
     if (act === 'feedTab') return S.feedTab = a.dataset.v, renderView();
@@ -2410,7 +2411,7 @@ document.addEventListener('click', e => {
     if (act === 'openMat') return openMaterial(a.dataset.id);
     if (act === 'closeModal') return a.closest('.ovl')?.remove();
     if (act === 'addMuscle') return muscleForm();
-    if (act === 'editMuscle') return { const m = (S.lib.muscles || []).find(x => x.id === a.dataset.id); muscleForm(m); };
+    if (act === 'editMuscle') { const m = (S.lib.muscles || []).find(x => x.id === a.dataset.id); return muscleForm(m); }
     if (act === 'delMuscle') { if (!confirm(t('confirmDel'))) return; return db.remove('muscles', { id:a.dataset.id }).then(() => renderView()); }
     if (act === 'addMaterial') return materialForm();
     if (act === 'editMat') { const m = (S.lib.mats || []).find(x => x.id === a.dataset.id); materialForm(m); };
@@ -2425,12 +2426,12 @@ document.addEventListener('click', e => {
   }
 });
 document.addEventListener('change', e => {
-  const inp = e.target;
+  const inp = e.target; const me_ = me();
   if (inp.matches('[name="visibility"]')) { const val = inp.value; db.select('workouts', { eq:{ user_id:me_ } }).then(ws => ws.forEach(w => db.update('workouts', { id:w.id }, { visibility:val }))); }
   if (inp.matches('[data-gram]')) { const idx = +inp.dataset.gram, r = S.nut.scan?.res; if (r) { r.items[idx].g = +inp.value; const tot = totals(r.items); $('#scanTot').innerHTML = totHTML(tot); $('#scanScore').innerHTML = scoreHTML(mealScore(tot)); } }
 });
 document.addEventListener('submit', e => {
-  const f = e.target; e.preventDefault();
+  const f = e.target; e.preventDefault(); const me_ = me();
   const form = f.dataset.form;
   if (form === 'email') return emailAuth(f);
   if (form === 'phoneSend') return phoneSend(f);
@@ -2502,24 +2503,6 @@ const exRow = (i, e={}) => `<div class="ex-edit fade-in"><input class="inp" name
 document.addEventListener('click', e => {
   if (e.target.dataset.act === 'delDay'){ if (!confirm(t('confirmDel'))) return; const d = +e.target.dataset.day; saveDay(d, '', []).then(() => { e.target.closest('.ovl').remove(); renderView(); }); }
 });
-
-/* =============================================================================
-   25. INIT
-   ============================================================================= */
-// Автоматический старт через 0.5с, даже если CDN зависла
-setTimeout(() => {
-  if (!S.user && !S.demo && !document.body.innerHTML.includes('FORMA.')){
-    startDemo();
-  }
-}, 500);
-
-if (localStorage.getItem('forma_demo')) startDemo();
-else if (sb){
-  sb.auth.onAuthStateChange((ev, session) => onSession(session));
-  sb.auth.getSession().then(s => onSession(s.data.session)).catch(e => { console.warn(e); startDemo(); });
-} else {
-  startDemo();
-}
 
 /* ===== EXTENDED FITHUB MODULES (NEW) ===== */
 
@@ -2984,7 +2967,7 @@ function postCard(p, o={}){
 }
 const score = p => { const hrs = (Date.now() - new Date(p.created_at)) / 36e5; const boost = S.following.has(p.user_id) ? 1.6 : 1; return boost * ((p._likes||0) * 2 + (p._replies||0) * 3 + 4) / Math.pow(hrs + 2, 1.3); };
 
-const VIEWS = {};
+// [dup removed] const VIEWS = {};
 VIEWS.feed = {
   async render(){
     const tab = S.feedTab;
@@ -4285,6 +4268,101 @@ document.addEventListener('click', async (e) => {
 document.addEventListener('submit', (e) => {
   // Already handled by click delegation
 }, true);
+
+
+/* =============================================================================
+   FIX BLOCK: недостающие функции и обработчики действий (были вызваны, но не определены)
+   ============================================================================= */
+function stopSessionTimers(){ try{ if (typeof TR !== 'undefined' && TR.on) closeTracker(); }catch(e){} }
+
+async function collectNotifications(limit=60){
+  const mineP = await db.select('posts', { eq:{ user_id:me() }, limit:200 });
+  const ids = mineP.map(p => p.id);
+  const out = [];
+  if (ids.length){
+    (await db.select('likes', { in:{ post_id:ids } })).filter(l => l.user_id !== me()).forEach(l => out.push({ kind:'like', from:l.user_id, post:l.post_id, at:l.created_at || '' }));
+    (await db.select('posts', { in:{ parent_id:ids } })).filter(r => r.user_id !== me()).forEach(r => out.push({ kind:'reply', from:r.user_id, post:r.parent_id, text:r.content, at:r.created_at }));
+  }
+  (await db.select('follows', { eq:{ following_id:me() } })).forEach(f => out.push({ kind:'follow', from:f.follower_id, at:f.created_at || '' }));
+  try{
+    const acts = await db.select('activities', { eq:{ user_id:me() }, limit:100 });
+    if (acts.length) (await db.select('kudos', { in:{ activity_id:acts.map(a => a.id) } })).filter(k => k.user_id !== me()).forEach(k => out.push({ kind:'kudos', from:k.user_id, at:k.created_at || '' }));
+  }catch(e){}
+  out.sort((a, b) => a.at < b.at ? 1 : -1);
+  return out.slice(0, limit);
+}
+VIEWS.notifications = {
+  async render(){
+    const list = await collectNotifications(60);
+    await ensureProfiles(list.map(n => n.from));
+    const since = localStorage.getItem(seenKey()) || '1970';
+    localStorage.setItem(seenKey(), new Date().toISOString()); paintBadge('notifications', 0);
+    const txt = { like:L('оценил(а) ваш тред','liked your thread'), reply:L('ответил(а) на ваш тред','replied to your thread'), follow:L('подписался(лась) на вас','followed you'), kudos:L('поставил(а) респект','gave you kudos') };
+    const ic = { like:'heart', reply:'reply', follow:'user', kudos:'bolt' };
+    return `<div class="hero-h"><div class="k">${t('notifications')}</div><h2>${L('Что','What’s')} <em>${L('нового.','new.')}</em></h2></div><div style="height:14px"></div>` +
+      (list.length ? list.map(n => { const p = S.profiles[n.from] || {}; return `<a class="ntf ${n.at > since ? 'new' : ''}" href="${n.post ? '#/post/' + n.post : '#/profile/' + n.from}"><div class="ic">${avatar(p)}<span class="k" style="background:var(--accent)">${icon(ic[n.kind])}</span></div><div class="t"><b>${esc(p.name || '—')}</b> ${txt[n.kind]}${n.text ? `<div class="q">${esc(n.text)}</div>` : ''}</div><span class="tm">${n.at ? ago(n.at) : ''}</span></a>`; }).join('')
+        : `<div class="empty"><div class="big">${L('Тишина','All quiet')}</div></div>`);
+  }
+};
+VIEWS.messages_after = null;
+async function openOnboarding(){
+  modal(`<div class="modal-h"><b>${t('onboarding')}</b><button class="ibtn" data-act="onbDone">${icon('x','sm')}</button></div>
+    <div class="modal-b"><div class="goal-cards">${['hyper','strength','fat','health'].map(g => `<button class="goal-card ${S.user.goal === g ? 'on' : ''}" data-act="onbGoal" data-g="${g}"><b>${GOAL_NAME(g)}</b></button>`).join('')}</div></div>`);
+}
+async function submitPost(a){
+  const ctx = a.dataset.ctx, box = document.querySelector(`.composer[data-ctx="${ctx}"]`);
+  const ta = box?.querySelector('textarea'); const text = (ta?.value || '').trim();
+  const img = S.composeImg[ctx];
+  if (!text && !img?.url) return toast(t('fillAll'), true);
+  let image_url = '';
+  if (img?.blob){ try{ image_url = await db.upload(CONFIG.BUCKET_MEDIA, img.blob, 'p'); }catch(e){ image_url = img.url; } }
+  const tag = box?.querySelector('.ctag.on')?.dataset.tag || null;
+  await db.insert('posts', { user_id:me(), content:text, tag, parent_id:a.dataset.parent || null, image_url });
+  S.composeImg[ctx] = {}; if (ta) ta.value = '';
+  a.closest('.ovl')?.remove(); toast(t('posted')); renderView();
+}
+async function toggleRow(table, keyA, valA, valB){
+  const eq = { [keyA]: valA, user_id: valB };
+  const ex = await db.one(table, eq);
+  if (ex) await db.remove(table, eq); else await db.insert(table, eq);
+}
+const EXTRA_ACTS = {
+  submitPost: a => submitPost(a),
+  like: async a => { await toggleRow('likes', 'post_id', a.dataset.id, me()); renderView(); },
+  bookmark: async a => { await toggleRow('bookmarks', 'post_id', a.dataset.id, me()); renderView(); },
+  kudos: async a => { await toggleRow('kudos', 'activity_id', a.dataset.id, me()); renderView(); },
+  delActivity: async a => { if (!confirm(t('confirmDel'))) return; await db.remove('activities', { id:a.dataset.id }); renderView(); },
+  recordActivity: () => activityForm(),
+  startTracker: () => openTracker(),
+  trType: a => { TR.type = a.dataset.v; $$('#tracker [data-act=trType]').forEach(b => b.classList.toggle('on', b === a)); },
+  trPause: () => trTogglePause(),
+  trFinish: () => trFinish(),
+  trCancel: () => closeTracker(),
+  pickActType: a => { const f = a.closest('form'); f.type.value = a.dataset.v; $$('#actTypes .chip').forEach(b => b.classList.toggle('on', b === a)); $('#distField').style.opacity = ACT_TYPES[a.dataset.v].dist ? '' : '.35'; },
+  exploreSet: a => { S.exploreQ = a.dataset.q; renderView(); },
+  followList: a => showFollowList(a.dataset.id, a.dataset.kind),
+  copyPlan: async a => { const ws = await db.select('workouts', { eq:{ user_id:a.dataset.id } }); await applyPlan(ws.map(w => ({ day:w.day, title:w.title, exercises:w.exercises }))); go('#/workouts'); },
+  reload: () => renderView(),
+  onbGoal: async a => { await db.update('profiles', { id:me() }, { goal:a.dataset.g }); S.user.goal = a.dataset.g; $$('.goal-card').forEach(b => b.classList.toggle('on', b === a)); S.user.onboarded = true; try{ await db.update('profiles', { id:me() }, { onboarded:true }); }catch(e){} },
+  onbDone: a => { a.closest('.ovl')?.remove(); render(); },
+};
+document.addEventListener('submit', async e => {
+  if (e.target.dataset.form !== 'activity') return;
+  const d = Object.fromEntries(new FormData(e.target)); d.share = !!e.target.share.checked;
+  const a = await saveActivity(d);
+  if (a){ e.target.closest('.ovl')?.remove(); renderView(); }
+});
+
+/* =============================================================================
+   25. INIT (перенесён в самый конец, чтобы все const были уже объявлены)
+   ============================================================================= */
+if (localStorage.getItem('fithub_demo') || localStorage.getItem('forma_demo')) startDemo();
+else if (sb){
+  sb.auth.onAuthStateChange((ev, session) => onSession(session));
+  sb.auth.getSession().then(s => onSession(s.data.session)).catch(e => { console.warn(e); startDemo(); });
+} else {
+  startDemo();
+}
 
 </script>
 
