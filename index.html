@@ -741,12 +741,28 @@ select.inp option{background:#151515}
 <div id="app"></div>
 <div class="toasts" id="toasts"></div>
 <input type="file" id="hiddenFile" class="sr" />
+<script>
+/* Защита: если хранилище браузера заблокировано (песочница/превью), работаем в памяти */
+(function(){
+  try { var k='__forma_t'; window.localStorage.setItem(k,'1'); window.localStorage.removeItem(k); }
+  catch(e){
+    var mem={}; var ls={getItem:function(k){return Object.prototype.hasOwnProperty.call(mem,k)?mem[k]:null},setItem:function(k,v){mem[k]=String(v)},removeItem:function(k){delete mem[k]},clear:function(){mem={}},key:function(i){return Object.keys(mem)[i]||null},get length(){return Object.keys(mem).length}};
+    try{ Object.defineProperty(window,'localStorage',{value:ls,configurable:true}); }catch(_){ window.__memLS=ls; }
+  }
+})();
+/* Если что-то упадёт, показываем ошибку вместо чёрного экрана */
+window.addEventListener('error',function(ev){
+  var app=document.getElementById('app'); if(app && app.children.length) return;
+  document.body.insertAdjacentHTML('beforeend','<pre style="position:fixed;left:16px;right:16px;bottom:16px;z-index:9999;white-space:pre-wrap;background:#1C1C1C;color:#FF8A5B;border:1px solid #333;border-radius:12px;padding:14px;font:13px/1.5 monospace">Ошибка: '+String(ev.message||ev.error)+'\n'+(ev.filename||'')+':'+(ev.lineno||'')+'</pre>');
+});
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 setTimeout(() => {
   if (!window.supabase) {
     const bd = document.body || document.documentElement;
-    if (typeof S === 'undefined' || !S.user) {
+    const appEl = document.getElementById('app');
+    if (!appEl || !appEl.children.length) {
       bd.innerHTML = '<div style="color:#fff;padding:40px;font-family:system-ui;background:#0A0A0A;min-height:100vh"><h1 style="margin:0;color:#D4FF3F">⚠️ Не работает</h1><p style="color:#888;margin-top:10px">CDN не загрузился. Попробуй:</p><ul style="color:#888"><li>Закрой и открой снова</li><li>Проверь интернет</li><li>Используй демо-режим после загрузки</li></ul><button onclick="location.reload()" style="background:#D4FF3F;color:#000;border:0;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:600;margin-top:20px">Обновить</button></div>';
     }
   }
@@ -1480,193 +1496,14 @@ async function loadSocial(){
   const [a, b] = await Promise.all([db.select('follows', { eq:{ follower_id:me() } }), db.select('follows', { eq:{ following_id:me() } })]);
   S.following = new Set(a.map(r => r.following_id)); S.followers = new Set(b.map(r => r.follower_id));
 }
-
-/* =============================================================================
-   12. AUTH
-   ============================================================================= */
-function makeUsername(s){ return (s || 'athlete').toLowerCase().replace(/@.*/, '').replace(/[^a-z0-9._]/g, '').slice(0, 18) || ('athlete' + Math.floor(Math.random()*9999)); }
-async function onSession(session){
-  if (!session?.user) return;
-  const u = session.user;
-  try{
-    const { error } = await sb.from('profiles').select('id').limit(1);
-    db.mode = error ? 'local' : 'cloud';
-    if (error) { seedLocal(); toast(t('cloudMissing'), true); }
-  }catch(e){ db.mode = 'local'; seedLocal(); }
-  let p = await db.one('profiles', { id:u.id });
-  if (!p){
-    const meta = u.user_metadata || {};
-    let username = makeUsername(meta.user_name || meta.preferred_username || u.email || (u.phone ? 'user' + u.phone.slice(-4) : ''));
-    if (await db.one('profiles', { username })) username += Math.floor(Math.random()*900 + 100);
-    p = await db.insert('profiles', { id:u.id, username, name: meta.full_name || meta.name || username, avatar_url: meta.avatar_url || meta.picture || '', bio:'', role:'user', goal:'hyper', sex:'male', age:25, height:178, weight:75, activity:1.55 });
-  }
-  S.user = p; S.demo = false;
-  await loadSocial(); loadCoach(); subscribeRealtime();
-  render();
-}
-async function startDemo(){
-  localStorage.setItem('forma_demo', '1');
-  db.mode = 'local'; seedLocal();
-  S.user = await db.one('profiles', { id:'me' }); S.demo = true;
-  await loadSocial(); loadCoach();
-  if (!location.hash || location.hash === '#/') location.hash = '#/feed';
-  render();
-}
-async function signOut(){
-  if (S.rt) { try { sb.removeChannel(S.rt); } catch(e){} S.rt = null; }
-  if (S.demo) localStorage.removeItem('forma_demo');
-  else if (sb) await sb.auth.signOut();
-  S.user = null; S.demo = false; S.profiles = {}; S.coach = [];
-  location.hash = ''; render();
-}
-async function oauth(provider){
-  if (!sb) return toast(t('authErr'), true);
-  const { error } = await sb.auth.signInWithOAuth({ provider, options:{ redirectTo: location.origin + location.pathname } });
-  if (error) toast(/provider/i.test(error.message) ? t('providerOff') : error.message, true);
-}
-async function emailAuth(form){
-  if (!sb) return toast(t('authErr'), true);
-  const email = form.email.value.trim(), password = form.password.value, name = form.name?.value?.trim();
-  if (!email || !password) return toast(t('fillAll'), true);
-  const btn = form.querySelector('button[type=submit]'); btn.disabled = true;
-  try{
-    if (S.auth.emailTab === 'signup'){
-      const { data, error } = await sb.auth.signUp({ email, password, options:{ data:{ full_name:name || '' }, emailRedirectTo: location.origin + location.pathname } });
-      if (error) throw error;
-      if (!data.session) toast(t('checkEmail'));
-    } else {
-      const { error } = await sb.auth.signInWithPassword({ email, password });
-      if (error) throw error;
-    }
-  }catch(e){ toast(e.message || t('authErr'), true); }
-  btn.disabled = false;
-}
-async function phoneSend(form){
-  if (!sb) return toast(t('authErr'), true);
-  const phone = form.phone.value.replace(/[^\d+]/g, '');
-  if (!/^\+\d{10,15}$/.test(phone)) return toast(t('invalidPhone'), true);
-  const { error } = await sb.auth.signInWithOtp({ phone });
-  if (error) return toast(/provider|phone/i.test(error.message) ? t('providerOff') : error.message, true);
-  S.auth.phone = phone; S.auth.phoneStep = 2; render();
-  setTimeout(() => $('.otp input')?.focus(), 50);
-}
-async function phoneVerify(){
-  const token = $$('.otp input').map(i => i.value).join('');
-  if (token.length < 6) return;
-  const { error } = await sb.auth.verifyOtp({ phone:S.auth.phone, token, type:'sms' });
-  if (error) toast(error.message, true);
-}
-
-/* =============================================================================
-   13. ROUTER & RENDER
-   ============================================================================= */
-function parseRoute(){
-  const [, name='feed', a=null, b=null] = (location.hash || '#/feed').split('/');
-  S.route = { name: name || 'feed', a, b };
-}
-window.addEventListener('hashchange', () => { parseRoute(); if (S.user) renderView(); window.scrollTo(0, 0); });
-// [dup removed] const go = h => { location.hash = h; };
-
-function render(){
-  document.documentElement.lang = LANG;
-  if (!S.user){ $('#app').innerHTML = authView(); return; }
-  parseRoute();
-  $('#app').innerHTML = shellView();
-  renderView(); renderSide();
-}
-// [dup removed] let viewSeq = 0;
-async function renderView(){
-  const seq = ++viewSeq;
-  const v = VIEWS[S.route.name] || VIEWS.feed;
-  $$('.rbtn[data-nav], .mbar [data-nav]').forEach(b => b.classList.toggle('on', b.dataset.nav === S.route.name));
-  const host = $('#view'); if (!host) return;
-  if (!host.dataset.loaded) host.innerHTML = loaderHTML();
-  try{
-    const html = await v.render(S.route.a, S.route.b);
-    if (seq !== viewSeq) return;
-    host.innerHTML = html; host.dataset.loaded = '1';
-    v.after && v.after(S.route.a, S.route.b);
-  }catch(e){
-    console.error(e);
-    if (seq === viewSeq) host.innerHTML = `<div class="empty"><div class="big">${t('error')}</div><div>${esc(e.message || '')}</div></div>`;
-  }
-}
-// [dup removed] const refresh = () => renderView();
-// [dup removed] const loaderHTML = () => `<div class="pad stack">${[1,2,3].map(() => `<div class="row" style="gap:12px;align-items:flex-start"><div class="skel" style="width:40px;height:40px;border-radius:50%"></div><div style="flex:1" class="stack"><div class="skel" style="height:14px;width:40%"></div><div class="skel" style="height:14px;width:90%"></div><div class="skel" style="height:14px;width:70%"></div></div></div>`).join('')}</div>`;
-
-function shellView(){
-  const nav = [['feed','home'],['explore','search'],['coach','bot'],['nutrition','apple_food'],['workouts','dumbbell'],['library','book'],['messages','chat'],['profile','user']];
-  return `
-  <div class="shell">
-    <aside class="rail">
-      <a class="logo" href="#/feed" aria-label="FORMA">F<b>.</b></a>
-      <nav>
-        ${nav.slice(0,2).map(([n,i]) => railBtn(n,i)).join('')}
-        <button class="rbtn compose" data-act="compose" aria-label="${t('newThread')}">${icon('plus')}<span class="tip">${t('newThread')}</span></button>
-        ${nav.slice(2).map(([n,i]) => railBtn(n,i)).join('')}
-      </nav>
-      <div style="display:flex;flex-direction:column;gap:6px;align-items:center">
-        <button class="rbtn" data-act="toggleLang" aria-label="${t('language')}"><span style="font-weight:800;font-size:13px;letter-spacing:.06em">${LANG.toUpperCase()}</span><span class="tip">${t('language')}</span></button>
-        ${railBtn('settings','settings')}
-      </div>
-    </aside>
-    <main class="col">
-      <div class="mtop">
-        <a class="logo" href="#/feed" style="width:auto;height:auto;font-size:24px">FORMA<b>.</b></a>
-        <div class="row" style="gap:4px">
-          <button class="ibtn" data-act="compose">${icon('plus')}</button>
-          <a class="ibtn" href="#/messages" style="position:relative">${icon('chat')}${S.unread ? '<span class="dot" style="position:absolute;top:8px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--accent)"></span>' : ''}</a>
-        </div>
-      </div>
-      <div id="view"></div>
-    </main>
-    <aside class="side" id="side"></aside>
-  </div>
-  <nav class="mbar">
-    <button data-nav="feed" data-act="nav">${icon('home')}</button>
-    <button data-nav="explore" data-act="nav">${icon('search')}</button>
-    <button class="mid" data-nav="coach" data-act="nav">${icon('bot')}</button>
-    <button data-nav="nutrition" data-act="nav">${icon('apple_food')}</button>
-    <button data-act="menu">${avatar(S.user,'xs')}</button>
-  </nav>`;
-}
-// [dup removed] const railBtn = (n, i) => `<a class="rbtn" data-nav="${n}" href="#/${n}" aria-label="${t(n)}">${icon(i)}${n === 'messages' && S.unread ? '<span class="dot"></span>' : ''}<span class="tip">${t(n)}</span></a>`;
-
-async function renderSide(){
-  const el = $('#side'); if (!el || getComputedStyle(el).display === 'none') return;
-  const tg = targets(S.user);
-  let tot = { kcal:0, p:0, f:0, c:0 };
-  try { (await db.select('meals', { eq:{ user_id:me(), date:todayStr() } })).forEach(m => { tot.kcal += +m.kcal; tot.p += +m.protein; tot.f += +m.fat; tot.c += +m.carbs; }); } catch(e){}
-  const sugg = Object.values(S.profiles).filter(p => p.id !== me() && !S.following.has(p.id)).slice(0, 4);
-  const bar = (lab, v, max, col) => `<div class="bar"><div class="lab"><span>${lab}</span><b>${Math.round(v)} / ${max}</b></div><div class="tr"><i style="width:${clamp(v/max*100,0,100)}%;background:${col}"></i></div></div>`;
-  el.innerHTML = `
-    <div class="card fade-in">
-      <div class="row" style="margin-bottom:14px"><h3 class="sp">${t('today')}</h3><a class="btn xs soft" href="#/nutrition">${icon('camera','xs')} ${t('nutrition')}</a></div>
-      <div class="mini-ring">
-        ${ringSVG(tot.kcal, tg.kcal, 92, 8)}
-        <div class="bars">${bar(t('protein'), tot.p, tg.protein, 'var(--p)')}${bar(t('fat'), tot.f, tg.fat, 'var(--f)')}${bar(t('carbs'), tot.c, tg.carbs, 'var(--c)')}</div>
-      </div>
-    </div>
-    <a class="card fade-in" href="#/coach" style="display:flex;gap:14px;align-items:center;background:linear-gradient(135deg,rgba(212,255,63,.1),transparent 60%),var(--surface)">
-      <div class="bot-av" style="width:42px;height:42px">${icon('bot')}</div>
-      <div><h3>${t('coachHi')}</h3><div class="sub">${t('coachSub')}</div></div>
-    </a>
-    ${sugg.length ? `<div class="card fade-in"><h3 style="margin-bottom:6px">${t('suggested')}</h3>${sugg.map(userRow).join('')}</div>` : ''}
-    <div class="foot">
-      <div class="row" style="justify-content:space-between;margin-bottom:10px">
-        <div class="lang-sw"><button class="${LANG==='ru'?'on':''}" data-act="setLang" data-l="ru">RU</button><button class="${LANG==='en'?'on':''}" data-act="setLang" data-l="en">EN</button></div>
-        <span class="mode-pill ${db.cloud ? 'cloud' : ''}"><i></i>${db.cloud ? t('cloud') : t('local')}</span>
-      </div>
-      © ${new Date().getFullYear()} FORMA · <a href="#/library">${t('library')}</a> · <a href="#/settings">${t('settings')}</a>
-    </div>`;
-}
 function ringSVG(v, max, size=176, sw=12){
   const r = (size - sw) / 2, C = 2 * Math.PI * r, pct = clamp(v / (max || 1), 0, 1), over = v > max;
   return `<div class="ring" style="width:${size}px;height:${size}px"><svg viewBox="0 0 ${size} ${size}"><circle cx="${size/2}" cy="${size/2}" r="${r}" stroke="#222" stroke-width="${sw}"/><circle class="ring-fg" cx="${size/2}" cy="${size/2}" r="${r}" stroke="${over ? 'var(--f)' : 'var(--accent)'}" stroke-width="${sw}" stroke-dasharray="${C}" stroke-dashoffset="${C}" data-off="${C * (1 - pct)}"/></svg>
     <div class="ctr">${size > 120 ? `<b>${fmtNum(Math.abs(max - v))}</b><span>${t('kcal')} ${over ? t('over') : t('left')}</span>` : `<b style="font-size:20px">${fmtNum(v)}</b><span style="font-size:12px;margin-top:0">/ ${fmtNum(max)}</span>`}</div></div>`;
 }
 function animateRings(){ requestAnimationFrame(() => setTimeout(() => $$('.ring-fg').forEach(c => c.style.strokeDashoffset = c.dataset.off), 60)); }
-const _rs = renderSide; renderSide = async function(){ await _rs(); animateRings(); };
+
+const VIEWS = {};
 
 /* =============================================================================
    14. AUTH VIEW
@@ -1737,177 +1574,6 @@ function emailForm(){
       <button class="btn pri block" type="submit" style="height:50px;margin-top:4px">${su ? t('signup') : t('login')}</button>
     </form>`;
 }
-
-/* =============================================================================
-   15. VIEWS: FEED / POST / EXPLORE / PROFILE
-   ============================================================================= */
-// [dup removed] const TAGS = ['tip','achievement','rule','question','progress'];
-// [dup removed] const tagBadge = tg => tg ? `<span class="tag ${tg}">${t(tg)}</span>` : '';
-function userRow(p){
-  const f = S.following.has(p.id);
-  return `<div class="urow"><a href="#/profile/${p.id}">${avatar(p)}</a><a class="t" href="#/profile/${p.id}"><b>${esc(p.name)}${verified(p)}</b><span>@${esc(p.username)}${S.followers.has(p.id) ? ' · ' + t('you_follow') : ''}</span></a>
-    ${p.id === me() ? '' : `<button class="btn sm ${f ? 'ghost' : 'pri'}" data-act="follow" data-id="${p.id}">${f ? t('followingBtn') : t('follow')}</button>`}</div>`;
-}
-function composerHTML(ctx, parent){
-  const ph = parent ? `${t('replyTo')} @${esc(S.profiles[parent.user_id]?.username || '')}` : t('whatsNew');
-  const img = S.composeImg[ctx];
-  return `<div class="composer" data-ctx="${ctx}">
-    ${avatar(S.user)}
-    <div class="body">
-      <div class="who">${esc(S.user.username)}</div>
-      <textarea data-autosize rows="1" placeholder="${ph}" maxlength="2000" data-compose="${ctx}"></textarea>
-      ${img ? `<div class="preview"><img src="${img.url}" alt="" /><button data-act="rmImg" data-ctx="${ctx}">${icon('x','xs')}</button></div>` : ''}
-      <div class="tools">
-        <button class="ibtn" data-act="attachImg" data-ctx="${ctx}" aria-label="${t('addPhoto')}">${icon('image','sm')}</button>
-        ${parent ? '' : TAGS.map(tg => `<button class="ctag ${tg}" data-act="pickTag" data-tag="${tg}">${t(tg)}</button>`).join('')}
-        <span class="sp"></span>
-        <button class="btn sm pri" data-act="submitPost" data-ctx="${ctx}" ${parent ? `data-parent="${parent.id}"` : ''}>${parent ? t('reply') : t('post')}</button>
-      </div>
-    </div>
-  </div>`;
-}
-async function hydratePosts(posts){
-  if (!posts.length) return posts;
-  const ids = posts.map(p => p.id);
-  const [likes, reps] = await Promise.all([db.select('likes', { in:{ post_id:ids } }), db.select('posts', { in:{ parent_id:ids }, cols:'id,parent_id' })]);
-  posts.forEach(p => {
-    p._likes = likes.filter(l => l.post_id === p.id).length;
-    p._liked = likes.some(l => l.post_id === p.id && l.user_id === me());
-    p._replies = reps.filter(r => r.parent_id === p.id).length;
-  });
-  await ensureProfiles(posts.map(p => p.user_id));
-  return posts;
-}
-function postCard(p, o={}){
-  const u = S.profiles[p.user_id] || { name:'—', username:'unknown' };
-  return `<article class="post ${o.chained ? 'chained' : ''} ${o.main ? 'main' : ''} fade-in" ${o.main ? '' : `data-act="openPost" data-id="${p.id}"`}>
-    <div class="lft"><a href="#/profile/${p.user_id}">${avatar(u, o.small ? 's' : '')}</a>${o.chained ? '<div class="thread-line"></div>' : ''}</div>
-    <div class="body">
-      <div class="meta"><a class="name" href="#/profile/${p.user_id}">${esc(u.username)}</a>${verified(u)}<span class="time">${ago(p.created_at)}</span><span class="sp"></span>
-        ${p.user_id === me() || isAdmin() ? `<button class="ibtn" style="width:30px;height:30px" data-act="delPost" data-id="${p.id}" aria-label="${t('delete')}">${icon('trash','xs')}</button>` : ''}</div>
-      ${p.tag ? `<div class="tagrow">${tagBadge(p.tag)}</div>` : ''}
-      <div class="content">${richText(p.content)}</div>
-      ${p.image_url ? `<div class="img"><img src="${esc(p.image_url)}" alt="" loading="lazy" /></div>` : ''}
-      <div class="acts">
-        <button class="act ${p._liked ? 'liked' : ''}" data-act="like" data-id="${p.id}">${icon('heart','sm')}<span>${p._likes || ''}</span></button>
-        <button class="act" data-act="openPost" data-id="${p.id}">${icon('reply','sm')}<span>${p._replies || ''}</span></button>
-        <button class="act" data-act="share" data-id="${p.id}">${icon('share','sm')}</button>
-      </div>
-    </div>
-  </article>`;
-}
-const VIEWS = {};
-VIEWS.feed = {
-  async render(){
-    let posts = await db.select('posts', { eq:{ parent_id:null }, order:'created_at', limit:120 });
-    if (S.feedTab === 'following') posts = posts.filter(p => S.following.has(p.user_id) || p.user_id === me());
-    await hydratePosts(posts);
-    if (S.feedTab === 'foryou') posts.sort((a, b) => score(b) - score(a));
-    return `
-      <div class="top"><div class="top-in" style="padding-bottom:0;min-height:0"></div>
-        <div class="tabs" style="border-bottom:0">
-          <button class="tab ${S.feedTab==='foryou'?'on':''}" data-act="feedTab" data-v="foryou">${t('forYou')}</button>
-          <button class="tab ${S.feedTab==='following'?'on':''}" data-act="feedTab" data-v="following">${t('following')}</button>
-        </div></div>
-      ${composerHTML('feed')}
-      ${posts.length ? posts.map(p => postCard(p)).join('') : `<div class="empty"><div class="big">${t('noPosts')}</div><div>${S.feedTab === 'following' ? t('noFollowing') : t('noPostsS')}</div></div>`}`;
-  }
-};
-// [dup removed] const score = p => { const hrs = (Date.now() - new Date(p.created_at)) / 36e5; return ((p._likes||0) * 2 + (p._replies||0) * 3 + 4) / Math.pow(hrs + 2, 1.3); };
-
-VIEWS.post = {
-  async render(id){
-    const p = await db.one('posts', { id });
-    if (!p) return `<div class="empty"><div class="big">404</div></div>`;
-    const chain = []; let cur = p;
-    while (cur.parent_id && chain.length < 6){ const par = await db.one('posts', { id:cur.parent_id }); if (!par) break; chain.unshift(par); cur = par; }
-    const replies = await db.select('posts', { eq:{ parent_id:id }, order:'created_at', asc:true });
-    await hydratePosts([...chain, p, ...replies]);
-    return `
-      <div class="top"><div class="top-in"><button class="back" data-act="back">${icon('back')}</button><h1>${t('threads')}</h1></div></div>
-      ${chain.map(c => postCard(c, { chained:true })).join('')}
-      ${postCard(p, { main:true })}
-      ${composerHTML('reply-' + id, p)}
-      ${replies.map(r => postCard(r, { small:false })).join('') || ''}`;
-  }
-};
-
-VIEWS.explore = {
-  async render(){
-    const posts = await db.select('posts', { eq:{ parent_id:null }, limit:300 });
-    const tagCount = {}; const hashCount = {};
-    posts.forEach(p => { if (p.tag) tagCount[p.tag] = (tagCount[p.tag]||0) + 1; (p.content.match(/#[\p{L}\d_]+/gu) || []).forEach(h => hashCount[h] = (hashCount[h]||0) + 1); });
-    const friends = Object.values(S.profiles).filter(p => mutual(p.id));
-    return `
-      <div class="hero-h"><div class="k">${t('explore')}</div><h2>${L('Найди','Find your')} <em>${L('своих.','people.')}</em></h2></div>
-      <div class="pad" style="padding-top:14px;padding-bottom:6px">
-        <div class="cbox" style="border-radius:16px;padding:4px 14px;align-items:center">${icon('search','sm')}<input id="exploreQ" class="sp" style="height:42px" placeholder="${t('searchPeople')}" value="${esc(S.exploreQ)}" /></div>
-      </div>
-      <div id="exploreRes" class="pad" style="padding-top:6px">${exploreList()}</div>
-      ${friends.length ? `<div class="section-t"><h3>${t('friends')}</h3><span class="muted" style="font-size:13.5px">${friends.length}</span></div><div class="pad" style="padding-top:0"><p class="muted" style="font-size:14px;margin-bottom:6px">${t('friendsHint')}</p>${friends.map(p => `<div class="urow"><a href="#/profile/${p.id}">${avatar(p)}</a><a class="t" href="#/profile/${p.id}"><b>${esc(p.name)}${verified(p)}</b><span>@${esc(p.username)}</span></a><a class="btn sm ghost" href="#/profile/${p.id}/plan">${icon('dumbbell','xs')} ${t('plan')}</a><a class="btn sm soft" href="#/messages/${p.id}">${icon('chat','xs')}</a></div>`).join('')}</div>` : ''}
-      <div class="section-t"><h3>${t('trending')}</h3></div>
-      <div class="pad" style="padding-top:0"><div class="chips">${Object.entries(tagCount).sort((a,b)=>b[1]-a[1]).map(([k,v]) => `<span class="tag ${k}" style="font-size:13.5px;padding:6px 12px">${t(k)} · ${v}</span>`).join('')}${Object.entries(hashCount).slice(0,8).map(([k,v]) => `<span class="chip">${esc(k)} · ${v}</span>`).join('')}</div></div>`;
-  },
-  after(){
-    const inp = $('#exploreQ');
-    inp?.addEventListener('input', () => { S.exploreQ = inp.value; $('#exploreRes').innerHTML = exploreList(); });
-  }
-};
-function exploreList(){
-  const q = S.exploreQ.trim().toLowerCase().replace(/^@/, '');
-  let list = Object.values(S.profiles).filter(p => p.id !== me());
-  if (q) list = list.filter(p => (p.name||'').toLowerCase().includes(q) || (p.username||'').toLowerCase().includes(q) || (p.bio||'').toLowerCase().includes(q));
-  else list = list.filter(p => !S.following.has(p.id)).concat(list.filter(p => S.following.has(p.id))).slice(0, 8);
-  if (!list.length) return `<div class="empty" style="padding:30px">${t('nobody')}</div>`;
-  return (q ? '' : `<div class="muted" style="font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin:6px 0">${t('suggested')}</div>`) + list.map(userRow).join('');
-}
-
-VIEWS.profile = {
-  async render(id, tab){
-    id = id || me();
-    await ensureProfiles([id]);
-    const p = S.profiles[id];
-    if (!p) return `<div class="empty"><div class="big">404</div></div>`;
-    const self = id === me();
-    tab = tab || 'threads';
-    const [fl, fg, posts] = await Promise.all([db.count('follows', { eq:{ following_id:id } }), db.count('follows', { eq:{ follower_id:id } }), db.select('posts', { eq:{ user_id:id }, order:'created_at', limit:100 })]);
-    const roots = posts.filter(x => !x.parent_id);
-    let body = '';
-    if (tab === 'threads' || tab === 'achievements'){
-      const list = tab === 'achievements' ? roots.filter(x => x.tag === 'achievement' || x.tag === 'progress') : roots;
-      await hydratePosts(list);
-      body = list.length ? list.map(x => postCard(x)).join('') : `<div class="empty"><div class="big">${t('noPosts')}</div></div>`;
-    } else if (tab === 'plan'){
-      const ws = await db.select('workouts', { eq:{ user_id:id } });
-      const vis = ws[0]?.visibility || 'public';
-      const can = self || vis === 'public' || (vis === 'friends' && mutual(id));
-      body = !ws.length ? `<div class="empty"><div class="big">${t('rest')}</div><div>—</div></div>` : !can ? `<div class="empty"><div class="big">🔒</div><div>${t('planHidden')}</div></div>` : `<div style="padding-top:18px">${weekGrid(ws, false)}</div><div class="wlist" style="margin-top:14px">${ws.sort((a,b)=>a.day-b.day).map(w => workoutCard(w, false)).join('')}</div>`;
-    }
-    const f = S.following.has(id);
-    return `
-      <div class="top"><div class="top-in"><button class="back" data-act="back">${icon('back')}</button><h1>${esc(p.name)}</h1>${self ? `<a class="ibtn" href="#/settings">${icon('settings','sm')}</a>` : ''}</div></div>
-      <section class="prof fade-in">
-        <div class="prof-top">
-          <div class="t">
-            <h2>${esc(p.name)}${verified(p)}</h2>
-            <div class="un">@${esc(p.username)} ${p.role === 'admin' ? `<span class="goal-pill">${icon('shield','xs')} ${t('admin')}</span>` : ''} ${p.goal ? `<span class="goal-pill">${GOAL_NAME(p.goal)}</span>` : ''}</div>
-          </div>
-          ${avatar(p, 'l')}
-        </div>
-        ${p.bio ? `<div class="bio">${richText(p.bio)}</div>` : ''}
-        <div class="stats"><span><b>${fmtNum(fl)}</b> ${t('followers')}</span><span><b>${fmtNum(fg)}</b> ${t('followingCnt')}</span>${!self && S.followers.has(id) ? `<span>· ${t('you_follow')}</span>` : ''}</div>
-        <div class="acts">
-          ${self ? `<button class="btn ghost" data-act="editProfile">${t('editProfile')}</button><button class="btn ghost" data-act="share" data-profile="${id}">${t('copyLink')}</button>`
-                 : `<button class="btn ${f ? 'ghost' : 'pri'}" data-act="follow" data-id="${id}" data-reload="1">${f ? t('followingBtn') : t('follow')}</button><a class="btn ghost" href="#/messages/${id}">${t('message')}</a>`}
-        </div>
-      </section>
-      <div class="tabs">
-        ${['threads','plan','achievements'].map(k => `<a class="tab ${tab===k?'on':''}" href="#/profile/${id}/${k}">${t(k)}</a>`).join('')}
-      </div>
-      ${body}`;
-  }
-};
-
 /* =============================================================================
    16. VIEWS: MESSAGES
    ============================================================================= */
@@ -2363,7 +2029,6 @@ document.addEventListener('click', async e => {
   const act = a.dataset.act, me_ = me();
   if (!me_ && !['demo','oauth','authMode','emailTab','phoneBack','compose','attachImg','setLang'].includes(act)) return;
   {
-    if (typeof EXTRA_ACTS !== 'undefined' && EXTRA_ACTS[act]) return EXTRA_ACTS[act](a, me_);
     if (act === 'nav') return S.route.name !== a.dataset.nav && (location.hash = '#/' + a.dataset.nav);
     if (act === 'demo') return startDemo();
     if (act === 'oauth') return oauth(a.dataset.p);
@@ -2375,7 +2040,7 @@ document.addEventListener('click', async e => {
     if (act === 'back') return history.back();
     if (act === 'openPost') return go('#/post/' + a.dataset.id);
     if (act === 'compose') return modal(composerHTML('post'), ''), bindAutosize();
-    if (act === 'attachImg') return pickFile('image/*').then(f => { if (f) compressImage(f, 800, .8).then(r => { S.composeImg[a.dataset.ctx] = { url:r.dataUrl, blob:r.blob }; renderView(); }).catch(() => S.composeImg[a.dataset.ctx] = null); });
+    if (act === 'attachImg') return pickFile('image/*').then(f => { if (f) compressImage(f, 800, .8).then(r => S.composeImg[a.dataset.ctx] = { url:r.dataUrl, blob:r.blob }, render()).catch(() => S.composeImg[a.dataset.ctx] = null); });
     if (act === 'rmImg') return S.composeImg[a.dataset.ctx] = {}, renderView();
     if (act === 'pickTag') return a.classList.toggle('on');
     if (act === 'feedTab') return S.feedTab = a.dataset.v, renderView();
@@ -2426,12 +2091,12 @@ document.addEventListener('click', async e => {
   }
 });
 document.addEventListener('change', e => {
-  const inp = e.target; const me_ = me();
+  const inp = e.target;
   if (inp.matches('[name="visibility"]')) { const val = inp.value; db.select('workouts', { eq:{ user_id:me_ } }).then(ws => ws.forEach(w => db.update('workouts', { id:w.id }, { visibility:val }))); }
   if (inp.matches('[data-gram]')) { const idx = +inp.dataset.gram, r = S.nut.scan?.res; if (r) { r.items[idx].g = +inp.value; const tot = totals(r.items); $('#scanTot').innerHTML = totHTML(tot); $('#scanScore').innerHTML = scoreHTML(mealScore(tot)); } }
 });
 document.addEventListener('submit', e => {
-  const f = e.target; e.preventDefault(); const me_ = me();
+  const f = e.target; e.preventDefault();
   const form = f.dataset.form;
   if (form === 'email') return emailAuth(f);
   if (form === 'phoneSend') return phoneSend(f);
@@ -2831,6 +2496,41 @@ function shellView(){
 }
 const railBtn = (n, i) => `<a class="rbtn" data-nav="${n}" href="#/${n === 'profile' ? 'profile/' + me() : n}" aria-label="${t(n)}">${icon(i)}<span class="badge-slot" data-badge="${n}"></span><span class="tip">${t(n)}</span></a>`;
 
+/* ---------- notifications (восстановлено: функция отсутствовала) ---------- */
+async function collectNotifications(limit=60){
+  const uid_ = me(); if (!uid_) return [];
+  const safe = pr => pr.catch(() => []);
+  const myPosts = await safe(db.select('posts', { eq:{ user_id:uid_ }, limit:300 }));
+  const pids = myPosts.map(p => p.id);
+  const myActs = await safe(db.select('activities', { eq:{ user_id:uid_ }, limit:300 }));
+  const aids = myActs.map(a => a.id);
+  const [likes, replies, follows, kudos] = await Promise.all([
+    pids.length ? safe(db.select('likes', { in:{ post_id:pids }, limit:200 })) : [],
+    pids.length ? safe(db.select('posts', { in:{ parent_id:pids }, limit:200 })) : [],
+    safe(db.select('follows', { eq:{ following_id:uid_ }, limit:200 })),
+    aids.length ? safe(db.select('kudos', { in:{ activity_id:aids }, limit:200 })) : []
+  ]);
+  const out = [];
+  likes.forEach(r => r.user_id !== uid_ && out.push({ type:'like', from:r.user_id, href:'#/post/' + r.post_id, at:r.created_at || '' }));
+  replies.forEach(r => r.user_id !== uid_ && out.push({ type:'reply', from:r.user_id, href:'#/post/' + r.id, text:r.content, at:r.created_at || '' }));
+  follows.forEach(r => out.push({ type:'follow', from:r.follower_id, href:'#/profile/' + r.follower_id, at:r.created_at || '' }));
+  kudos.forEach(r => r.user_id !== uid_ && out.push({ type:'kudos', from:r.user_id, href:'#/activity', at:r.created_at || '' }));
+  out.sort((a, b) => String(b.at).localeCompare(String(a.at)));
+  return out.slice(0, limit);
+}
+VIEWS.notifications = {
+  async render(){
+    const list = await collectNotifications(60);
+    await ensureProfiles(list.map(n => n.from)).catch(() => {});
+    localStorage.setItem(seenKey(), new Date().toISOString());
+    const lbl = { like:L('оценил(а) ваш пост','liked your post'), reply:L('ответил(а) вам','replied to you'), follow:L('подписался(ась) на вас','followed you'), kudos:L('дал(а) респект','gave you kudos') };
+    const head = `<div class="top"><div class="top-in"><h1>${t('notifications')}</h1></div></div>`;
+    if (!list.length) return head + `<div class="empty"><div class="big">${L('Пока тихо','All quiet')}</div><div>${L('Здесь появятся лайки, ответы и подписки','Likes, replies and follows will show up here')}</div></div>`;
+    return head + `<div class="pad">` + list.map(n => { const p = S.profiles[n.from] || {}; return `<a class="urow fade-in" href="${n.href}">${avatar(p, 's')}<div class="t"><b>${esc(p.name || p.username || '—')}</b><span>${lbl[n.type]}${n.text ? ': ' + esc(String(n.text).slice(0, 80)) : ''}</span></div><span class="dim" style="font-size:13px">${n.at ? ago(n.at) : ''}</span></a>`; }).join('') + `</div>`;
+  },
+  after(){ try{ paintBadge('notifications', 0); }catch(e){} }
+};
+
 /* ---------- badges (уведомления и сообщения) ---------- */
 const seenKey = () => 'fithub_seen_' + me();
 const msgSeenKey = () => 'fithub_msgseen_' + me();
@@ -2967,7 +2667,7 @@ function postCard(p, o={}){
 }
 const score = p => { const hrs = (Date.now() - new Date(p.created_at)) / 36e5; const boost = S.following.has(p.user_id) ? 1.6 : 1; return boost * ((p._likes||0) * 2 + (p._replies||0) * 3 + 4) / Math.pow(hrs + 2, 1.3); };
 
-// [dup removed] const VIEWS = {};
+// VIEWS объявлен выше
 VIEWS.feed = {
   async render(){
     const tab = S.feedTab;
@@ -4269,101 +3969,23 @@ document.addEventListener('submit', (e) => {
   // Already handled by click delegation
 }, true);
 
-
 /* =============================================================================
-   FIX BLOCK: недостающие функции и обработчики действий (были вызваны, но не определены)
+   25. INIT
    ============================================================================= */
-function stopSessionTimers(){ try{ if (typeof TR !== 'undefined' && TR.on) closeTracker(); }catch(e){} }
-
-async function collectNotifications(limit=60){
-  const mineP = await db.select('posts', { eq:{ user_id:me() }, limit:200 });
-  const ids = mineP.map(p => p.id);
-  const out = [];
-  if (ids.length){
-    (await db.select('likes', { in:{ post_id:ids } })).filter(l => l.user_id !== me()).forEach(l => out.push({ kind:'like', from:l.user_id, post:l.post_id, at:l.created_at || '' }));
-    (await db.select('posts', { in:{ parent_id:ids } })).filter(r => r.user_id !== me()).forEach(r => out.push({ kind:'reply', from:r.user_id, post:r.parent_id, text:r.content, at:r.created_at }));
+// Автоматический старт через 0.5с, даже если CDN зависла
+setTimeout(() => {
+  if (!S.user && !S.demo && !document.body.innerHTML.includes('FORMA.')){
+    startDemo();
   }
-  (await db.select('follows', { eq:{ following_id:me() } })).forEach(f => out.push({ kind:'follow', from:f.follower_id, at:f.created_at || '' }));
-  try{
-    const acts = await db.select('activities', { eq:{ user_id:me() }, limit:100 });
-    if (acts.length) (await db.select('kudos', { in:{ activity_id:acts.map(a => a.id) } })).filter(k => k.user_id !== me()).forEach(k => out.push({ kind:'kudos', from:k.user_id, at:k.created_at || '' }));
-  }catch(e){}
-  out.sort((a, b) => a.at < b.at ? 1 : -1);
-  return out.slice(0, limit);
-}
-VIEWS.notifications = {
-  async render(){
-    const list = await collectNotifications(60);
-    await ensureProfiles(list.map(n => n.from));
-    const since = localStorage.getItem(seenKey()) || '1970';
-    localStorage.setItem(seenKey(), new Date().toISOString()); paintBadge('notifications', 0);
-    const txt = { like:L('оценил(а) ваш тред','liked your thread'), reply:L('ответил(а) на ваш тред','replied to your thread'), follow:L('подписался(лась) на вас','followed you'), kudos:L('поставил(а) респект','gave you kudos') };
-    const ic = { like:'heart', reply:'reply', follow:'user', kudos:'bolt' };
-    return `<div class="hero-h"><div class="k">${t('notifications')}</div><h2>${L('Что','What’s')} <em>${L('нового.','new.')}</em></h2></div><div style="height:14px"></div>` +
-      (list.length ? list.map(n => { const p = S.profiles[n.from] || {}; return `<a class="ntf ${n.at > since ? 'new' : ''}" href="${n.post ? '#/post/' + n.post : '#/profile/' + n.from}"><div class="ic">${avatar(p)}<span class="k" style="background:var(--accent)">${icon(ic[n.kind])}</span></div><div class="t"><b>${esc(p.name || '—')}</b> ${txt[n.kind]}${n.text ? `<div class="q">${esc(n.text)}</div>` : ''}</div><span class="tm">${n.at ? ago(n.at) : ''}</span></a>`; }).join('')
-        : `<div class="empty"><div class="big">${L('Тишина','All quiet')}</div></div>`);
-  }
-};
-VIEWS.messages_after = null;
-async function openOnboarding(){
-  modal(`<div class="modal-h"><b>${t('onboarding')}</b><button class="ibtn" data-act="onbDone">${icon('x','sm')}</button></div>
-    <div class="modal-b"><div class="goal-cards">${['hyper','strength','fat','health'].map(g => `<button class="goal-card ${S.user.goal === g ? 'on' : ''}" data-act="onbGoal" data-g="${g}"><b>${GOAL_NAME(g)}</b></button>`).join('')}</div></div>`);
-}
-async function submitPost(a){
-  const ctx = a.dataset.ctx, box = document.querySelector(`.composer[data-ctx="${ctx}"]`);
-  const ta = box?.querySelector('textarea'); const text = (ta?.value || '').trim();
-  const img = S.composeImg[ctx];
-  if (!text && !img?.url) return toast(t('fillAll'), true);
-  let image_url = '';
-  if (img?.blob){ try{ image_url = await db.upload(CONFIG.BUCKET_MEDIA, img.blob, 'p'); }catch(e){ image_url = img.url; } }
-  const tag = box?.querySelector('.ctag.on')?.dataset.tag || null;
-  await db.insert('posts', { user_id:me(), content:text, tag, parent_id:a.dataset.parent || null, image_url });
-  S.composeImg[ctx] = {}; if (ta) ta.value = '';
-  a.closest('.ovl')?.remove(); toast(t('posted')); renderView();
-}
-async function toggleRow(table, keyA, valA, valB){
-  const eq = { [keyA]: valA, user_id: valB };
-  const ex = await db.one(table, eq);
-  if (ex) await db.remove(table, eq); else await db.insert(table, eq);
-}
-const EXTRA_ACTS = {
-  submitPost: a => submitPost(a),
-  like: async a => { await toggleRow('likes', 'post_id', a.dataset.id, me()); renderView(); },
-  bookmark: async a => { await toggleRow('bookmarks', 'post_id', a.dataset.id, me()); renderView(); },
-  kudos: async a => { await toggleRow('kudos', 'activity_id', a.dataset.id, me()); renderView(); },
-  delActivity: async a => { if (!confirm(t('confirmDel'))) return; await db.remove('activities', { id:a.dataset.id }); renderView(); },
-  recordActivity: () => activityForm(),
-  startTracker: () => openTracker(),
-  trType: a => { TR.type = a.dataset.v; $$('#tracker [data-act=trType]').forEach(b => b.classList.toggle('on', b === a)); },
-  trPause: () => trTogglePause(),
-  trFinish: () => trFinish(),
-  trCancel: () => closeTracker(),
-  pickActType: a => { const f = a.closest('form'); f.type.value = a.dataset.v; $$('#actTypes .chip').forEach(b => b.classList.toggle('on', b === a)); $('#distField').style.opacity = ACT_TYPES[a.dataset.v].dist ? '' : '.35'; },
-  exploreSet: a => { S.exploreQ = a.dataset.q; renderView(); },
-  followList: a => showFollowList(a.dataset.id, a.dataset.kind),
-  copyPlan: async a => { const ws = await db.select('workouts', { eq:{ user_id:a.dataset.id } }); await applyPlan(ws.map(w => ({ day:w.day, title:w.title, exercises:w.exercises }))); go('#/workouts'); },
-  reload: () => renderView(),
-  onbGoal: async a => { await db.update('profiles', { id:me() }, { goal:a.dataset.g }); S.user.goal = a.dataset.g; $$('.goal-card').forEach(b => b.classList.toggle('on', b === a)); S.user.onboarded = true; try{ await db.update('profiles', { id:me() }, { onboarded:true }); }catch(e){} },
-  onbDone: a => { a.closest('.ovl')?.remove(); render(); },
-};
-document.addEventListener('submit', async e => {
-  if (e.target.dataset.form !== 'activity') return;
-  const d = Object.fromEntries(new FormData(e.target)); d.share = !!e.target.share.checked;
-  const a = await saveActivity(d);
-  if (a){ e.target.closest('.ovl')?.remove(); renderView(); }
-});
+}, 500);
 
-/* =============================================================================
-   25. INIT (перенесён в самый конец, чтобы все const были уже объявлены)
-   ============================================================================= */
-if (localStorage.getItem('fithub_demo') || localStorage.getItem('forma_demo')) startDemo();
+if (localStorage.getItem('forma_demo')) startDemo();
 else if (sb){
   sb.auth.onAuthStateChange((ev, session) => onSession(session));
   sb.auth.getSession().then(s => onSession(s.data.session)).catch(e => { console.warn(e); startDemo(); });
 } else {
   startDemo();
 }
-
 </script>
 
 <!-- =============================================================================
