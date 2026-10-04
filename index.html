@@ -564,6 +564,177 @@ select.inp option{background:#151515}
   .tot{grid-template-columns:repeat(2,1fr)}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ===== EXTENDED FITHUB CSS (NEW) ===== */
+
+/* =============================================================================
+   FITHUB · EXTENDED STYLES (3D-тренер, сессии, активность, уведомления, онбординг)
+   ============================================================================= */
+:root{ --heat0:#161616; --heat1:#2a3a0c; --heat2:#5a7a12; --heat3:#9cc61f; --heat4:#D4FF3F; }
+.logo.word{font-size:22px;letter-spacing:-.07em;width:auto;padding:0 4px}
+.rail nav{max-height:calc(100vh - 170px);overflow-y:auto;scrollbar-width:none}
+.rail nav::-webkit-scrollbar{display:none}
+.rbtn{height:50px}
+.rbtn .badge{position:absolute;top:8px;right:9px;min-width:17px;height:17px;padding:0 5px;border-radius:9px;background:var(--accent);color:#0A0A0A;font-size:11px;font-weight:800;display:grid;place-items:center;box-shadow:0 0 0 3px var(--bg)}
+.kbd{font-family:var(--mono);font-size:12px;color:var(--muted);border:1px solid var(--line2);border-radius:6px;padding:1px 6px}
+.notice{margin:14px 22px 0;padding:12px 14px;border-radius:14px;border:1px solid rgba(212,255,63,.25);background:var(--accentSoft);color:var(--text2);font-size:14px;display:flex;gap:10px;align-items:flex-start}
+.notice b{color:var(--text)}
+.notice.warn{border-color:rgba(255,92,92,.3);background:rgba(255,92,92,.08)}
+
+/* ---------- session player ---------- */
+.sess{min-height:100vh;display:flex;flex-direction:column}
+.sess-top{display:flex;align-items:center;gap:12px;padding:14px 22px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(10,10,10,.85);backdrop-filter:blur(16px);z-index:6}
+.sess-top .clock{font-family:var(--mono);font-size:15px;color:var(--text2);font-variant-numeric:tabular-nums}
+.segbar{display:flex;gap:4px;padding:12px 22px 0}
+.segbar i{flex:1;height:4px;border-radius:3px;background:#242424;overflow:hidden;position:relative}
+.segbar i.done{background:var(--accent)}
+.segbar i.cur:after{content:"";position:absolute;inset:0;width:var(--p,0%);background:var(--accent);border-radius:3px;transition:width .4s var(--ease)}
+.sess-title{padding:18px 22px 12px}
+.sess-title .k{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.sess-title h2{font-size:30px;font-weight:800;letter-spacing:-.04em;line-height:1.05;margin-top:4px}
+.sets{display:flex;flex-direction:column;gap:8px;padding:16px 22px}
+.setrow{display:grid;grid-template-columns:38px 1fr 1fr 44px;gap:8px;align-items:center;padding:8px 10px;border-radius:14px;background:var(--surface);border:1px solid var(--line);transition:.2s}
+.setrow.cur{border-color:rgba(212,255,63,.45);box-shadow:0 0 0 4px rgba(212,255,63,.06)}
+.setrow.done{opacity:.6}
+.setrow .n{font-family:var(--mono);font-size:13px;color:var(--muted);text-align:center}
+.setrow .inp{height:40px;text-align:center;font-family:var(--mono)}
+.setrow .ok{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;border:1px solid var(--line2);color:var(--muted)}
+.setrow.done .ok{background:var(--accent);border-color:var(--accent);color:#0A0A0A}
+.sess-nav{display:flex;gap:8px;padding:6px 22px 30px}
+.rest-ovl{position:fixed;inset:0;z-index:120;background:rgba(6,6,6,.92);backdrop-filter:blur(14px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;animation:fo .25s both}
+.rest-ovl .lbl{font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.rest-ring{position:relative;width:min(70vw,300px);aspect-ratio:1}
+.rest-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.rest-ring circle{fill:none;stroke-linecap:round}
+.rest-ring .num{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(64px,18vw,104px);font-weight:800;letter-spacing:-.06em;font-variant-numeric:tabular-nums}
+.rest-ovl .next{color:var(--text2);font-size:15px;text-align:center;max-width:320px}
+.rest-ovl .next b{color:var(--text)}
+.summary{padding:30px 22px;display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.summary h2{font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(52px,8vw,84px);line-height:.9;letter-spacing:-.03em}
+.sum-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:100%}
+.sum-grid div{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px}
+.sum-grid b{display:block;font-size:26px;font-weight:800;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.sum-grid span{font-size:13px;color:var(--muted)}
+
+/* ---------- activity / FitHub graph ---------- */
+.heat-wrap{padding:6px 22px 4px;overflow-x:auto;scrollbar-width:none}
+.heat-wrap::-webkit-scrollbar{display:none}
+.heat{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,1fr);gap:3px;width:max-content}
+.heat i{width:13px;height:13px;border-radius:3.5px;background:var(--heat0);position:relative;transition:transform .15s}
+.heat i:hover{transform:scale(1.35);z-index:2;outline:1px solid #555}
+.heat i.l1{background:var(--heat1)}.heat i.l2{background:var(--heat2)}.heat i.l3{background:var(--heat3)}.heat i.l4{background:var(--heat4)}
+.heat i.fut{background:transparent;border:1px dashed #1e1e1e}
+.heat-legend{display:flex;align-items:center;gap:4px;font-size:12.5px;color:var(--dim);padding:8px 22px 0}
+.heat-legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.heat-months{display:flex;font-size:12px;color:var(--dim);padding:0 22px 6px;gap:0}
+.act-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:16px 22px}
+.act-stats .card{padding:14px}
+.act-stats b{display:block;font-size:24px;font-weight:800;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.act-stats span{font-size:13px;color:var(--muted)}
+.bars7{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:120px;padding:0 22px}
+.bars7 div{display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.bars7 i{width:100%;max-width:34px;border-radius:8px 8px 3px 3px;background:#232323;min-height:4px;transition:height .8s var(--ease)}
+.bars7 i.on{background:var(--accent)}
+.bars7 span{font-size:12px;color:var(--dim);font-family:var(--mono)}
+.acard{padding:16px 22px;border-bottom:1px solid var(--line)}
+.acard .h{display:flex;align-items:center;gap:10px}
+.acard .h .t{flex:1;min-width:0}
+.acard .h b{font-weight:650;font-size:14.5px}
+.acard .h span{display:block;color:var(--dim);font-size:13px}
+.acard h4{font-size:19px;font-weight:750;letter-spacing:-.02em;margin:12px 0 2px;display:flex;align-items:center;gap:8px}
+.acard .notes{color:var(--text2);font-size:14.5px;margin-top:4px;white-space:pre-wrap}
+.acard .st{display:flex;gap:26px;margin-top:12px;flex-wrap:wrap}
+.acard .st div span{display:block;font-size:12.5px;color:var(--muted)}
+.acard .st div b{font-size:21px;font-weight:750;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.acard .route{margin-top:12px;border-radius:14px;border:1px solid var(--line);background:#0e0f0b;overflow:hidden}
+.acard .route svg{display:block;width:100%;height:150px}
+.acard .foot2{display:flex;align-items:center;gap:8px;margin-top:10px}
+.kudos{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--line2);font-size:13.5px;font-weight:600;color:var(--text2);transition:.2s}
+.kudos:hover{border-color:#555;color:var(--text)}
+.kudos.on{background:var(--accent);border-color:var(--accent);color:#0A0A0A}
+.kudos.on svg{animation:pop .35s var(--ease)}
+.stack-av{display:flex}
+.stack-av .av{box-shadow:0 0 0 2px var(--bg);margin-left:-7px}
+.stack-av .av:first-child{margin-left:0}
+.atype{width:30px;height:30px;border-radius:10px;display:inline-grid;place-items:center;background:var(--surface2);font-size:16px}
+.lb-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.lb-row:first-child{border-top:0}
+.lb-row .pos{width:22px;font-family:var(--mono);color:var(--muted);font-size:13px}
+.lb-row .pos.g{color:var(--accent);font-weight:700}
+.lb-row .t{flex:1;min-width:0}
+.lb-row .t b{display:block;font-size:14.5px;font-weight:600}
+.lb-row .meter{height:4px;border-radius:3px;background:#222;margin-top:6px;overflow:hidden}
+.lb-row .meter i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.lb-row .v{font-family:var(--mono);font-size:13.5px}
+.tracker{position:fixed;inset:0;z-index:110;background:#070707;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:30px;animation:fo .3s both}
+.tracker .big{font-size:clamp(70px,20vw,150px);font-weight:800;letter-spacing:-.06em;font-variant-numeric:tabular-nums;line-height:.9}
+.tracker .big.paused{color:var(--muted)}
+.tracker .types{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.pulse-dot{width:10px;height:10px;border-radius:50%;background:var(--danger);box-shadow:0 0 0 0 rgba(255,92,92,.6);animation:pd 1.6s infinite}
+@keyframes pd{to{box-shadow:0 0 0 14px rgba(255,92,92,0)}}
+
+/* ---------- notifications ---------- */
+.ntf{display:flex;gap:12px;padding:14px 22px;border-bottom:1px solid var(--line);align-items:flex-start;transition:background .2s}
+.ntf:hover{background:rgba(255,255,255,.015)}
+.ntf.new{background:linear-gradient(90deg,rgba(212,255,63,.06),transparent 40%)}
+.ntf .ic{position:relative}
+.ntf .ic .k{position:absolute;right:-4px;bottom:-4px;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;box-shadow:0 0 0 3px var(--bg);color:#0A0A0A}
+.ntf .ic .k svg{width:11px;height:11px;stroke-width:3}
+.ntf .t{flex:1;min-width:0;font-size:14.5px}
+.ntf .t .q{color:var(--muted);margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ntf .tm{color:var(--dim);font-size:13px;white-space:nowrap}
+
+/* ---------- onboarding ---------- */
+.onb{position:fixed;inset:0;z-index:130;background:var(--bg);display:grid;grid-template-columns:1fr 1fr;animation:fo .3s both;overflow:auto}
+.onb-l{padding:44px 56px;border-right:1px solid var(--line);display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.onb-l .step{font-family:var(--mono);color:var(--muted);font-size:13px;letter-spacing:.12em}
+.onb-l h2{font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(54px,7vw,104px);line-height:.88;letter-spacing:-.035em}
+.onb-l h2 em{display:block;font-style:normal;font-family:var(--sans);font-weight:800;letter-spacing:-.07em;font-size:.8em;color:var(--accent)}
+.onb-r{padding:44px 56px;display:flex;flex-direction:column;justify-content:center;gap:18px;max-width:560px}
+.goal-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.goal-card{border:1px solid var(--line2);border-radius:18px;padding:16px;text-align:left;transition:.2s;background:var(--surface)}
+.goal-card:hover{border-color:#555}
+.goal-card.on{border-color:var(--accent);background:var(--accentSoft)}
+.goal-card .e{font-size:26px}
+.goal-card b{display:block;font-size:16px;margin-top:8px}
+.goal-card span{display:block;color:var(--muted);font-size:13.5px;margin-top:2px}
+.onb-dots{display:flex;gap:6px}
+.onb-dots i{width:26px;height:4px;border-radius:3px;background:#262626}
+.onb-dots i.on{background:var(--accent)}
+
+/* ---------- misc ---------- */
+.act.saved{color:var(--accent)}
+.act.saved svg{fill:var(--accent)}
+.feed-act-head{display:flex;align-items:center;gap:10px;padding:14px 22px;border-bottom:1px solid var(--line)}
+.search-posts .post{cursor:pointer}
+.empty .ill{width:110px;height:110px;margin:0 auto 14px;opacity:.9}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;padding:0 22px}
+.toggle-row{display:flex;align-items:center;gap:12px}
+.wcard .h .btn.acc{margin-left:auto}
+.dropdown{position:absolute;z-index:60;right:0;top:40px;background:var(--surface2);border:1px solid var(--line2);border-radius:14px;padding:6px;min-width:190px;box-shadow:0 20px 50px rgba(0,0,0,.6)}
+.dropdown button{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:9px;font-size:14px;text-align:left}
+.dropdown button:hover{background:#262626}
+.otp-row{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:13.5px;color:var(--muted)}
+.otp-row button{color:var(--text);text-decoration:underline;text-underline-offset:3px}
+.otp-row button[disabled]{color:var(--dim);text-decoration:none}
+.forgot{display:block;margin-left:auto;font-size:13px;color:var(--muted);margin-top:-4px}
+.forgot:hover{color:var(--text)}
+.offline-bar{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:200;background:var(--surface2);border:1px solid var(--line2);border-radius:999px;padding:8px 14px;font-size:13.5px;color:var(--text2)}
+
+@media (max-width:900px){
+  .onb{grid-template-columns:1fr}
+  .onb-l{padding:30px 24px 10px;border-right:0;min-height:auto}
+  .onb-l h2{font-size:56px;margin-top:20px}
+  .onb-r{padding:20px 24px 40px;max-width:none}
+}
+@media (max-width:720px){
+  .act-stats,.sum-grid{grid-template-columns:1fr 1fr}
+  .act-stats{padding:14px 16px}
+  .bars7{padding:0 16px}
+  .heat-wrap,.heat-legend,.heat-months{padding-left:16px;padding-right:16px}
+  .acard,.ntf,.sets,.sess-nav,.sess-title,.sess-top,.segbar{padding-left:16px;padding-right:16px}
+  }
+
 </style>
 </head>
 <body>
@@ -571,6 +742,16 @@ select.inp option{background:#151515}
 <div class="toasts" id="toasts"></div>
 <input type="file" id="hiddenFile" class="sr" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+setTimeout(() => {
+  if (!window.supabase) {
+    const bd = document.body || document.documentElement;
+    if (!bd.innerHTML.includes('FORMA.')) {
+      bd.innerHTML = '<div style="color:#fff;padding:40px;font-family:system-ui;background:#0A0A0A;min-height:100vh"><h1 style="margin:0;color:#D4FF3F">⚠️ Не работает</h1><p style="color:#888;margin-top:10px">CDN не загрузился. Попробуй:</p><ul style="color:#888"><li>Закрой и открой снова</li><li>Проверь интернет</li><li>Используй демо-режим после загрузки</li></ul><button onclick="location.reload()" style="background:#D4FF3F;color:#000;border:0;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:600;margin-top:20px">Обновить</button></div>';
+    }
+  }
+}, 4000);
+</script>
 <script>
 'use strict';
 /* =============================================================================
@@ -2325,6 +2506,13 @@ document.addEventListener('click', e => {
 /* =============================================================================
    25. INIT
    ============================================================================= */
+// Автоматический старт через 0.5с, даже если CDN зависла
+setTimeout(() => {
+  if (!S.user && !S.demo && !document.body.innerHTML.includes('FORMA.')){
+    startDemo();
+  }
+}, 500);
+
 if (localStorage.getItem('forma_demo')) startDemo();
 else if (sb){
   sb.auth.onAuthStateChange((ev, session) => onSession(session));
@@ -2332,6 +2520,1772 @@ else if (sb){
 } else {
   startDemo();
 }
+
+/* ===== EXTENDED FITHUB MODULES (NEW) ===== */
+
+/* Module 1: b_core.js */
+
+/* =============================================================================
+   11b. EXTRA I18N + ICONS (FitHub)
+   ============================================================================= */
+Object.assign(I18N.ru, {
+  activity:'Активность', notifications:'Уведомления', saved:'Сохранённое', session:'Тренировка', activities:'Активности',
+  startWorkout:'Начать тренировку', record:'Записать', kudos:'Респект', onboarding:'Настройка профиля', forgot:'Забыли пароль?',
+  resetSent:'Ссылка для сброса пароля отправлена на почту', resend:'Отправить код снова', resendIn:'Повторно через',
+  confirmDel:'Удалить? Это действие нельзя отменить.', openLink:'Открыть', download:'Скачать', planHidden:'План скрыт настройками приватности',
+});
+Object.assign(I18N.en, {
+  activity:'Activity', notifications:'Notifications', saved:'Saved', session:'Workout', activities:'Activities',
+  startWorkout:'Start workout', record:'Record', kudos:'Kudos', onboarding:'Profile setup', forgot:'Forgot password?',
+  resetSent:'Password reset link sent to your inbox', resend:'Resend code', resendIn:'Resend in',
+  confirmDel:'Delete? This cannot be undone.', openLink:'Open', download:'Download',
+});
+Object.assign(IC, {
+  bell:'<path d="M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/>',
+  bookmark:'<path d="M6 3h12v18l-6-4-6 4z"/>',
+  activity:'<path d="M3 12h4l3-8 4 16 3-8h4"/>',
+  timer:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/>',
+  pause:'<path d="M8 5v14M16 5v14"/>',
+  stop:'<rect x="6" y="6" width="12" height="12" rx="2"/>',
+  trophy:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>',
+  route:'<circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M8.5 19H16a3.5 3.5 0 0 0 0-7H8a3.5 3.5 0 0 1 0-7h7.5"/>',
+  skip:'<path d="m5 4 10 8-10 8z"/><path d="M19 5v14"/>',
+  download:'<path d="M12 4v12M6 10l6 6 6-6"/><path d="M4 20h16"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+});
+
+/* =============================================================================
+   11c. EXTRA SEED (активности, респекты, закладки)
+   ============================================================================= */
+const ACT_TYPES = {
+  gym:  { e:'🏋️', ru:'Силовая',   en:'Strength', dist:false, met:5.0 },
+  run:  { e:'🏃', ru:'Бег',        en:'Run',      dist:true,  met:9.8 },
+  ride: { e:'🚴', ru:'Велосипед',  en:'Ride',     dist:true,  met:7.5 },
+  walk: { e:'🚶', ru:'Прогулка',   en:'Walk',     dist:true,  met:3.5 },
+  swim: { e:'🏊', ru:'Плавание',   en:'Swim',     dist:true,  met:8.0 },
+  hiit: { e:'⚡', ru:'HIIT',       en:'HIIT',     dist:false, met:8.0 },
+  yoga: { e:'🧘', ru:'Йога',       en:'Yoga',     dist:false, met:2.8 },
+};
+const actName = k => L(ACT_TYPES[k]?.ru || k, ACT_TYPES[k]?.en || k);
+function seedExtra(){
+  const d = local.load();
+  if (d.__extra2) return;
+  const now = Date.now(), DAY = 864e5;
+  let seedN = 7;
+  const rnd = () => (seedN = (seedN * 16807) % 2147483647) / 2147483647;
+  const plans = {
+    me:     { p:.55, types:['gym','gym','run','walk'] },
+    u_anna: { p:.75, types:['gym','gym','gym','yoga'] },
+    u_max:  { p:.6,  types:['gym'] },
+    u_lera: { p:.8,  types:['run','run','run','gym','ride'] },
+    u_dima: { p:.65, types:['gym','walk','hiit','run'] },
+    u_sofia:{ p:.5,  types:['yoga','run','swim'] },
+    u_tim:  { p:.6,  types:['gym','gym','walk'] },
+  };
+  const titles = {
+    gym:[['Верх А','Upper A'],['Ноги + кор','Legs + core'],['Тяжёлый присед','Heavy squat'],['Жим и тяга','Push & pull']],
+    run:[['Лёгкая пробежка Z2','Easy Z2 run'],['Интервалы 6×800','Intervals 6×800'],['Длинная воскресная','Sunday long run']],
+    ride:[['Вело по набережной','Riverside ride']], walk:[['Прогулка 10к шагов','10k steps walk']],
+    swim:[['Бассейн 1500 м','Pool 1500 m']], hiit:[['Табата 20 мин','Tabata 20 min']], yoga:[['Мобилити и растяжка','Mobility & stretch']],
+  };
+  d.activities = [];
+  Object.entries(plans).forEach(([uid_, pl]) => {
+    for (let i = 120; i >= 0; i--){
+      if (rnd() > pl.p * (i < 30 ? 1.05 : .8)) continue;
+      const type = pl.types[Math.floor(rnd() * pl.types.length)];
+      const T = ACT_TYPES[type];
+      const dur = Math.round((type === 'walk' ? 55 : type === 'run' ? 32 + rnd()*45 : type === 'ride' ? 60 + rnd()*60 : type === 'yoga' ? 30 : 45 + rnd()*35) * 60);
+      const speed = { run:10.5, ride:24, walk:5.2, swim:2.6 }[type] || 0;
+      const dist = T.dist ? round(dur / 3600 * speed * (.85 + rnd()*.3), 1) : 0;
+      const tt = titles[type][Math.floor(rnd() * titles[type].length)];
+      const created = new Date(now - i*DAY - (6 + rnd()*12) * 36e5);
+      d.activities.push({
+        id: uid(), user_id: uid_, type, title: L(tt[0], tt[1]), duration_s: dur, distance_km: dist,
+        volume_kg: type === 'gym' ? Math.round(4000 + rnd()*9000) : 0, sets: type === 'gym' ? Math.round(14 + rnd()*10) : 0,
+        kcal: Math.round(T.met * 75 * dur / 3600), notes: '', visibility: 'public',
+        date: todayStr(created), created_at: created.toISOString()
+      });
+    }
+  });
+  const recent = d.activities.filter(a => a.user_id !== 'me' && (now - new Date(a.created_at)) < 6*DAY);
+  d.kudos = [];
+  d.activities.filter(a => a.user_id === 'me').slice(-8).forEach(a => ['u_anna','u_max','u_lera'].forEach(u => { if (rnd() > .4) d.kudos.push({ activity_id:a.id, user_id:u, created_at:new Date(new Date(a.created_at).getTime() + 3e6).toISOString() }); }));
+  recent.forEach(a => ['u_anna','u_tim','u_dima','u_sofia'].forEach(u => { if (u !== a.user_id && rnd() > .55) d.kudos.push({ activity_id:a.id, user_id:u, created_at:a.created_at }); }));
+  d.bookmarks = [{ post_id:'p3', user_id:'me', created_at:new Date(now - 3*36e5).toISOString() }];
+  (d.profiles || []).forEach(p => { p.onboarded = true; });
+  d.__extra2 = true;
+  local.persist();
+}
+
+/* =============================================================================
+   12. AUTH
+   ============================================================================= */
+function makeUsername(s){ return (s || 'athlete').toLowerCase().replace(/@.*/, '').replace(/[^a-z0-9._]/g, '').slice(0, 18) || ('athlete' + Math.floor(Math.random()*9999)); }
+let sessionUserId = null;
+async function detectCloud(){
+  try{
+    const { error } = await sb.from('profiles').select('id').limit(1);
+    db.mode = error ? 'local' : 'cloud';
+    if (error) { console.warn('Supabase tables missing:', error.message); seedLocal(); seedExtra(); toast(t('cloudMissing'), true); }
+  }catch(e){ db.mode = 'local'; seedLocal(); seedExtra(); }
+}
+async function onSession(session){
+  if (!session?.user) {
+    if (sessionUserId && !S.demo) { sessionUserId = null; S.user = null; render(); }
+    return;
+  }
+  if (sessionUserId === session.user.id && S.user) return;     // onAuthStateChange + getSession → один раз
+  sessionUserId = session.user.id;
+  const u = session.user;
+  await detectCloud();
+  let p = await db.one('profiles', { id:u.id });
+  if (!p){
+    const meta = u.user_metadata || {};
+    let username = makeUsername(meta.user_name || meta.preferred_username || u.email || (u.phone ? 'user' + u.phone.slice(-4) : ''));
+    if (await db.one('profiles', { username })) username += Math.floor(Math.random()*900 + 100);
+    p = await db.insert('profiles', {
+      id:u.id, username, name: meta.full_name || meta.name || username,
+      avatar_url: meta.avatar_url || meta.picture || '', bio:'', role:'user', verified:false, onboarded:false,
+      goal:'hyper', sex:'male', age:25, height:178, weight:75, activity:1.55
+    });
+  }
+  S.user = p; S.demo = false;
+  await afterLogin();
+}
+async function afterLogin(){
+  await loadSocial(); loadCoach(); subscribeRealtime();
+  if (!location.hash || location.hash === '#/') location.hash = '#/feed';
+  render();
+  if (!S.user.onboarded) setTimeout(openOnboarding, 250);
+  refreshBadges();
+}
+async function startDemo(){
+  localStorage.setItem('fithub_demo', '1');
+  db.mode = 'local'; seedLocal(); seedExtra();
+  S.user = await db.one('profiles', { id:'me' }); S.demo = true;
+  await afterLogin();
+}
+async function signOut(){
+  if (S.rt) { try { sb.removeChannel(S.rt); } catch(e){} S.rt = null; }
+  stopSessionTimers();
+  if (S.demo) localStorage.removeItem('fithub_demo');
+  else if (sb) await sb.auth.signOut();
+  sessionUserId = null;
+  S.user = null; S.demo = false; S.profiles = {}; S.coach = []; S.following = new Set(); S.followers = new Set();
+  location.hash = ''; render();
+}
+async function oauth(provider){
+  if (!sb) return toast(L('Supabase SDK не загрузился. Доступен только демо-режим.','Supabase SDK failed to load. Demo mode only.'), true);
+  const { error } = await sb.auth.signInWithOAuth({ provider, options:{ redirectTo: location.origin + location.pathname } });
+  if (error) toast(/provider|not enabled|unsupported/i.test(error.message) ? t('providerOff') : error.message, true);
+}
+async function emailAuth(form){
+  if (!sb) return toast(t('authErr'), true);
+  const email = form.email.value.trim(), password = form.password.value, name = form.name?.value?.trim();
+  if (!email || !password) return toast(t('fillAll'), true);
+  if (password.length < 6) return toast(L('Пароль минимум 6 символов','Password must be at least 6 characters'), true);
+  const btn = form.querySelector('button[type=submit]'); btn.disabled = true;
+  try{
+    if (S.auth.emailTab === 'signup'){
+      const { data, error } = await sb.auth.signUp({ email, password, options:{ data:{ full_name:name || '' }, emailRedirectTo: location.origin + location.pathname } });
+      if (error) throw error;
+      if (!data.session) toast(t('checkEmail'));
+    } else {
+      const { error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+    }
+  }catch(e){ toast(/invalid login/i.test(e.message) ? L('Неверная почта или пароль','Wrong email or password') : (e.message || t('authErr')), true); }
+  btn.disabled = false;
+}
+async function resetPassword(){
+  const email = $('form[data-form=email] [name=email]')?.value.trim();
+  if (!email) return toast(L('Сначала введите почту','Enter your email first'), true);
+  if (!sb) return toast(t('authErr'), true);
+  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+  toast(error ? error.message : t('resetSent'), !!error);
+}
+let otpTimer = null;
+function startOtpCountdown(){
+  S.auth.resendAt = Date.now() + 45e3;
+  clearInterval(otpTimer);
+  otpTimer = setInterval(() => {
+    const b = $('#resendBtn'); if (!b) return clearInterval(otpTimer);
+    const left = Math.ceil((S.auth.resendAt - Date.now()) / 1000);
+    if (left <= 0){ b.disabled = false; b.textContent = t('resend'); clearInterval(otpTimer); }
+    else { b.disabled = true; b.textContent = `${t('resendIn')} ${left}s`; }
+  }, 500);
+}
+async function phoneSend(form){
+  if (!sb) return toast(t('authErr'), true);
+  const phone = (form ? form.phone.value : S.auth.phone).replace(/[^\d+]/g, '');
+  if (!/^\+\d{10,15}$/.test(phone)) return toast(t('invalidPhone'), true);
+  const { error } = await sb.auth.signInWithOtp({ phone });
+  if (error) return toast(/provider|phone|sms/i.test(error.message) ? t('providerOff') : error.message, true);
+  S.auth.phone = phone; S.auth.phoneStep = 2; render();
+  setTimeout(() => { $('.otp input')?.focus(); startOtpCountdown(); }, 50);
+}
+async function phoneVerify(){
+  const token = $$('.otp input').map(i => i.value).join('');
+  if (token.length < 6) return toast(L('Введите 6 цифр','Enter all 6 digits'), true);
+  const { error } = await sb.auth.verifyOtp({ phone:S.auth.phone, token, type:'sms' });
+  if (error) { toast(error.message, true); $$('.otp input').forEach(i => i.value = ''); $('.otp input')?.focus(); }
+}
+function bindOtp(){
+  const ins = $$('.otp input');
+  ins.forEach((inp, i) => {
+    inp.addEventListener('input', () => {
+      inp.value = inp.value.replace(/\D/g, '').slice(-1);
+      if (inp.value && ins[i+1]) ins[i+1].focus();
+      if (ins.every(x => x.value)) phoneVerify();
+    });
+    inp.addEventListener('keydown', e => { if (e.key === 'Backspace' && !inp.value && ins[i-1]) ins[i-1].focus(); });
+    inp.addEventListener('paste', e => {
+      const v = (e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, 6);
+      if (!v) return; e.preventDefault();
+      ins.forEach((x, j) => x.value = v[j] || '');
+      if (v.length === 6) phoneVerify(); else ins[v.length]?.focus();
+    });
+  });
+}
+
+/* =============================================================================
+   13. ROUTER & RENDER
+   ============================================================================= */
+function parseRoute(){
+  const [, name='feed', a=null, b=null] = (location.hash || '#/feed').split('/');
+  S.route = { name: name || 'feed', a: a ? decodeURIComponent(a) : null, b: b ? decodeURIComponent(b) : null };
+}
+window.addEventListener('hashchange', () => {
+  parseRoute();
+  if (!S.user) return;
+  if (S.route.name === 'session' && !S.session) { go('#/workouts'); return; }
+  const shellMode = S.route.name === 'session' ? 'focus' : 'shell';
+  if (($('#app').dataset.mode || 'shell') !== shellMode) render(); else { renderView(); renderSide(); }
+  window.scrollTo(0, 0);
+});
+const go = h => { location.hash = h; };
+
+function render(){
+  document.documentElement.lang = LANG;
+  document.title = 'FitHub · ' + L('тренировки, питание и сообщество', 'training, food & community');
+  if (!S.user){
+    $('#app').dataset.mode = 'auth';
+    $('#app').innerHTML = authView();
+    if (S.auth.mode === 'phone' && S.auth.phoneStep === 2) bindOtp();
+    return;
+  }
+  parseRoute();
+  if (S.route.name === 'session' && S.session){
+    $('#app').dataset.mode = 'focus';
+    $('#app').innerHTML = `<div id="view" class="sess-host"></div>`;
+    renderView();
+    return;
+  }
+  $('#app').dataset.mode = 'shell';
+  $('#app').innerHTML = shellView();
+  renderView(); renderSide();
+}
+let viewSeq = 0;
+async function renderView(){
+  const seq = ++viewSeq;
+  const v = VIEWS[S.route.name] || VIEWS.feed;
+  $$('.rbtn[data-nav], .mbar [data-nav]').forEach(b => b.classList.toggle('on', b.dataset.nav === S.route.name || (b.dataset.nav === 'profile' && S.route.name === 'profile' && (!S.route.a || S.route.a === me()))));
+  const host = $('#view'); if (!host) return;
+  if (!host.dataset.loaded) host.innerHTML = loaderHTML();
+  try{
+    const html = await v.render(S.route.a, S.route.b);
+    if (seq !== viewSeq) return;
+    host.innerHTML = html; host.dataset.loaded = '1';
+    bindAutosize();
+    v.after && v.after(S.route.a, S.route.b);
+  }catch(e){
+    console.error(e);
+    if (seq === viewSeq) host.innerHTML = `<div class="empty"><div class="big">${t('error')}</div><div>${esc(e.message || '')}</div><button class="btn ghost" style="margin-top:16px" data-act="reload">${icon('refresh','xs')} ${L('Повторить','Retry')}</button></div>`;
+  }
+}
+const refresh = () => renderView();
+const loaderHTML = () => `<div class="pad stack">${[1,2,3].map(() => `<div class="row" style="gap:12px;align-items:flex-start"><div class="skel" style="width:40px;height:40px;border-radius:50%"></div><div style="flex:1" class="stack" style="gap:8px"><div class="skel" style="height:14px;width:40%"></div><div class="skel" style="height:14px;width:90%"></div><div class="skel" style="height:14px;width:70%"></div></div></div>`).join('')}</div>`;
+
+const NAV = [
+  ['feed','home'], ['explore','search'], ['coach','bot'], ['nutrition','apple_food'], ['workouts','dumbbell'],
+  ['activity','activity'], ['library','book'], ['messages','chat'], ['notifications','bell'], ['profile','user']
+];
+function shellView(){
+  return `
+  <div class="shell">
+    <aside class="rail">
+      <a class="logo word" href="#/feed" aria-label="FitHub">fh<b>.</b></a>
+      <nav>
+        ${NAV.slice(0,2).map(([n,i]) => railBtn(n,i)).join('')}
+        <button class="rbtn compose" data-act="compose" aria-label="${t('newThread')}">${icon('plus')}<span class="tip">${t('newThread')} <span class="kbd">N</span></span></button>
+        ${NAV.slice(2).map(([n,i]) => railBtn(n,i)).join('')}
+      </nav>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:center">
+        <button class="rbtn" data-act="toggleLang" aria-label="${t('language')}"><span style="font-weight:800;font-size:13px;letter-spacing:.06em">${LANG.toUpperCase()}</span><span class="tip">${t('language')}</span></button>
+        ${railBtn('settings','settings')}
+      </div>
+    </aside>
+    <main class="col">
+      <div class="mtop">
+        <a class="logo" href="#/feed" style="width:auto;height:auto;font-size:24px">fithub<b>.</b></a>
+        <div class="row" style="gap:4px">
+          <button class="ibtn" data-act="compose" aria-label="${t('newThread')}">${icon('plus')}</button>
+          <a class="ibtn" href="#/notifications" style="position:relative" aria-label="${t('notifications')}">${icon('bell')}<span class="mdot" data-badge="notifications"></span></a>
+          <a class="ibtn" href="#/messages" style="position:relative" aria-label="${t('messages')}">${icon('chat')}<span class="mdot" data-badge="messages"></span></a>
+        </div>
+      </div>
+      <div id="view"></div>
+    </main>
+    <aside class="side" id="side"></aside>
+  </div>
+  <nav class="mbar">
+    <button data-nav="feed" data-act="nav">${icon('home')}</button>
+    <button data-nav="activity" data-act="nav">${icon('activity')}</button>
+    <button class="mid" data-nav="coach" data-act="nav">${icon('bot')}</button>
+    <button data-nav="workouts" data-act="nav">${icon('dumbbell')}</button>
+    <button data-act="menu">${avatar(S.user,'xs')}</button>
+  </nav>`;
+}
+const railBtn = (n, i) => `<a class="rbtn" data-nav="${n}" href="#/${n === 'profile' ? 'profile/' + me() : n}" aria-label="${t(n)}">${icon(i)}<span class="badge-slot" data-badge="${n}"></span><span class="tip">${t(n)}</span></a>`;
+
+/* ---------- badges (уведомления и сообщения) ---------- */
+const seenKey = () => 'fithub_seen_' + me();
+const msgSeenKey = () => 'fithub_msgseen_' + me();
+async function refreshBadges(){
+  if (!S.user) return;
+  try{
+    const since = localStorage.getItem(seenKey()) || '1970';
+    const n = (await collectNotifications(60)).filter(x => x.at > since).length;
+    const msince = localStorage.getItem(msgSeenKey()) || '1970';
+    const m = (await db.select('messages', { eq:{ receiver_id:me() }, gte:{ created_at:msince }, limit:99 })).filter(x => x.created_at > msince).length;
+    paintBadge('notifications', S.route.name === 'notifications' ? 0 : n);
+    paintBadge('messages', S.route.name === 'messages' ? 0 : (m || (S.unread ? 1 : 0)));
+  }catch(e){ console.warn('badges', e); }
+}
+function paintBadge(name, n){
+  $$(`[data-badge="${name}"]`).forEach(el => {
+    if (el.classList.contains('mdot')) { el.style.cssText = n ? 'position:absolute;top:8px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--accent)' : ''; return; }
+    el.innerHTML = n ? `<span class="badge">${n > 9 ? '9+' : n}</span>` : '';
+  });
+}
+
+/* ---------- правая колонка ---------- */
+async function renderSide(){
+  const el = $('#side'); if (!el || getComputedStyle(el).display === 'none') return;
+  const tg = targets(S.user);
+  let tot = { kcal:0, p:0, f:0, c:0 }, week = { sec:0, n:0 };
+  try { (await db.select('meals', { eq:{ user_id:me(), date:todayStr() } })).forEach(m => { tot.kcal += +m.kcal; tot.p += +m.protein; tot.f += +m.fat; tot.c += +m.carbs; }); } catch(e){}
+  try { (await db.select('activities', { eq:{ user_id:me() }, gte:{ date:weekStart() } })).forEach(a => { week.sec += +a.duration_s || 0; week.n++; }); } catch(e){}
+  const sugg = Object.values(S.profiles).filter(p => p.id !== me() && !S.following.has(p.id)).slice(0, 4);
+  const bar = (lab, v, max, col) => `<div class="bar"><div class="lab"><span>${lab}</span><b>${Math.round(v)} / ${max}</b></div><div class="tr"><i style="width:${clamp(v/max*100,0,100)}%;background:${col}"></i></div></div>`;
+  el.innerHTML = `
+    <div class="card fade-in">
+      <div class="row" style="margin-bottom:14px"><h3 class="sp">${t('today')}</h3><a class="btn xs soft" href="#/nutrition">${icon('camera','xs')} ${t('nutrition')}</a></div>
+      <div class="mini-ring">
+        ${ringSVG(tot.kcal, tg.kcal, 92, 8)}
+        <div class="bars">${bar(t('protein'), tot.p, tg.protein, 'var(--p)')}${bar(t('fat'), tot.f, tg.fat, 'var(--f)')}${bar(t('carbs'), tot.c, tg.carbs, 'var(--c)')}</div>
+      </div>
+    </div>
+    <a class="card fade-in" href="#/activity" style="display:flex;gap:14px;align-items:center">
+      <div class="sp"><div class="sub">${L('Эта неделя','This week')}</div><div style="font-size:24px;font-weight:800;letter-spacing:-.04em">${fmtDur(week.sec)}</div><div class="sub">${week.n} ${L('активн.','sessions')}</div></div>
+      <span class="acc">${icon('activity','lg')}</span>
+    </a>
+    <a class="card fade-in" href="#/coach" style="display:flex;gap:14px;align-items:center;background:linear-gradient(135deg,rgba(212,255,63,.1),transparent 60%),var(--surface)">
+      <div class="bot-av" style="width:42px;height:42px">${icon('bot')}</div>
+      <div><h3>${t('coachHi')}</h3><div class="sub">${t('coachSub')}</div></div>
+    </a>
+    ${sugg.length ? `<div class="card fade-in"><h3 style="margin-bottom:6px">${t('suggested')}</h3>${sugg.map(userRow).join('')}</div>` : ''}
+    <div class="foot">
+      <div class="row" style="justify-content:space-between;margin-bottom:10px">
+        <div class="lang-sw"><button class="${LANG==='ru'?'on':''}" data-act="setLang" data-l="ru">RU</button><button class="${LANG==='en'?'on':''}" data-act="setLang" data-l="en">EN</button></div>
+        <span class="mode-pill ${db.cloud ? 'cloud' : ''}"><i></i>${db.cloud ? t('cloud') : t('local')}</span>
+      </div>
+      © ${new Date().getFullYear()} FitHub · <a href="#/library">${t('library')}</a> · <a href="#/settings">${t('settings')}</a>
+    </div>`;
+  animateRings();
+  refreshBadges();
+}
+const weekStart = () => addDays(todayStr(), -todayDow());
+function fmtDur(sec){
+  sec = Math.round(+sec || 0);
+  const h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60);
+  return h ? `${h}${L('ч','h')} ${String(m).padStart(2,'0')}${L('м','m')}` : `${m}${L(' мин',' min')}`;
+}
+const fmtClock = sec => { sec = Math.max(0, Math.round(sec)); const h = Math.floor(sec/3600), m = Math.floor(sec%3600/60), s = sec%60; return (h ? h + ':' + String(m).padStart(2,'0') : m) + ':' + String(s).padStart(2,'0'); };
+
+
+/* Module 2: c_social.js */
+
+/* =============================================================================
+   15. VIEWS: FEED / POST / EXPLORE / TAG / PROFILE
+   ============================================================================= */
+const TAGS = ['tip','achievement','rule','question','progress'];
+const tagBadge = tg => tg ? `<span class="tag ${tg}">${t(tg)}</span>` : '';
+function userRow(p){
+  const f = S.following.has(p.id);
+  return `<div class="urow"><a href="#/profile/${p.id}">${avatar(p)}</a><a class="t" href="#/profile/${p.id}"><b>${esc(p.name)}${verified(p)}</b><span>@${esc(p.username)}${S.followers.has(p.id) ? ' · ' + t('you_follow') : ''}</span></a>
+    ${p.id === me() ? '' : `<button class="btn sm ${f ? 'ghost' : 'pri'}" data-act="follow" data-id="${p.id}">${f ? t('followingBtn') : t('follow')}</button>`}</div>`;
+}
+function composerHTML(ctx, parent){
+  const ph = parent ? `${t('replyTo')} @${esc(S.profiles[parent.user_id]?.username || '')}` : t('whatsNew');
+  const img = S.composeImg[ctx];
+  const draft = S.drafts?.[ctx] || '';
+  return `<div class="composer" data-ctx="${ctx}">
+    ${avatar(S.user)}
+    <div class="body">
+      <div class="who">${esc(S.user.username)}</div>
+      <textarea data-autosize rows="1" placeholder="${ph}" maxlength="2000" data-compose="${ctx}">${esc(draft)}</textarea>
+      <div class="preview-slot">${img?.url ? `<div class="preview"><img src="${img.url}" alt="" /><button data-act="rmImg" data-ctx="${ctx}" aria-label="${t('delete')}">${icon('x','xs')}</button></div>` : ''}</div>
+      <div class="tools">
+        <button class="ibtn" data-act="attachImg" data-ctx="${ctx}" aria-label="${t('addPhoto')}">${icon('image','sm')}</button>
+        ${parent ? '' : TAGS.map(tg => `<button class="ctag ${tg} ${S.composeTag?.[ctx] === tg ? 'on' : ''}" data-act="pickTag" data-ctx="${ctx}" data-tag="${tg}">${t(tg)}</button>`).join('')}
+        <span class="sp"></span>
+        <span class="dim mono cnt" style="font-size:12px" data-count="${ctx}"></span>
+        <button class="btn sm pri" data-act="submitPost" data-ctx="${ctx}" ${parent ? `data-parent="${parent.id}"` : ''}>${parent ? t('reply') : t('post')}</button>
+      </div>
+    </div>
+  </div>`;
+}
+async function hydratePosts(posts){
+  if (!posts.length) return posts;
+  const ids = posts.map(p => p.id);
+  const [likes, reps, bms] = await Promise.all([
+    db.select('likes', { in:{ post_id:ids } }),
+    db.select('posts', { in:{ parent_id:ids }, cols:'id,parent_id' }),
+    db.select('bookmarks', { eq:{ user_id:me() }, in:{ post_id:ids } }).catch(() => []),
+  ]);
+  posts.forEach(p => {
+    p._likes = likes.filter(l => l.post_id === p.id).length;
+    p._liked = likes.some(l => l.post_id === p.id && l.user_id === me());
+    p._replies = reps.filter(r => r.parent_id === p.id).length;
+    p._saved = bms.some(b => b.post_id === p.id);
+  });
+  await ensureProfiles(posts.map(p => p.user_id));
+  return posts;
+}
+function postCard(p, o={}){
+  const u = S.profiles[p.user_id] || { name:'—', username:'unknown' };
+  return `<article class="post ${o.chained ? 'chained' : ''} ${o.main ? 'main' : ''} fade-in" ${o.main ? '' : `data-act="openPost" data-id="${p.id}"`}>
+    <div class="lft"><a href="#/profile/${p.user_id}">${avatar(u, o.small ? 's' : '')}</a>${o.chained ? '<div class="thread-line"></div>' : ''}</div>
+    <div class="body">
+      <div class="meta"><a class="name" href="#/profile/${p.user_id}">${esc(u.username)}</a>${verified(u)}<span class="time" title="${esc(new Date(p.created_at).toLocaleString())}">${ago(p.created_at)}</span><span class="sp"></span>
+        ${p.user_id === me() || isAdmin() ? `<button class="ibtn" style="width:30px;height:30px" data-act="delPost" data-id="${p.id}" aria-label="${t('delete')}">${icon('trash','xs')}</button>` : ''}</div>
+      ${p.tag ? `<div class="tagrow">${tagBadge(p.tag)}</div>` : ''}
+      <div class="content">${richText(p.content)}</div>
+      ${p.image_url ? `<div class="img"><img src="${esc(p.image_url)}" alt="" loading="lazy" /></div>` : ''}
+      <div class="acts">
+        <button class="act ${p._liked ? 'liked' : ''}" data-act="like" data-id="${p.id}" aria-label="${t('likes')}">${icon('heart','sm')}<span>${p._likes || ''}</span></button>
+        <button class="act" data-act="openPost" data-id="${p.id}" aria-label="${t('replies')}">${icon('reply','sm')}<span>${p._replies || ''}</span></button>
+        <button class="act ${p._saved ? 'saved' : ''}" data-act="bookmark" data-id="${p.id}" aria-label="${t('saved')}">${icon('bookmark','sm')}</button>
+        <button class="act" data-act="share" data-id="${p.id}" aria-label="${t('copyLink')}">${icon('share','sm')}</button>
+      </div>
+    </div>
+  </article>`;
+}
+const score = p => { const hrs = (Date.now() - new Date(p.created_at)) / 36e5; const boost = S.following.has(p.user_id) ? 1.6 : 1; return boost * ((p._likes||0) * 2 + (p._replies||0) * 3 + 4) / Math.pow(hrs + 2, 1.3); };
+
+const VIEWS = {};
+VIEWS.feed = {
+  async render(){
+    const tab = S.feedTab;
+    const tabs = `<div class="top"><div class="tabs" style="border-bottom:0">
+        ${[['foryou', t('forYou')], ['following', t('following')], ['activities', t('activities')]].map(([k, l]) => `<button class="tab ${tab===k?'on':''}" data-act="feedTab" data-v="${k}">${l}</button>`).join('')}
+      </div></div>`;
+    if (tab === 'activities'){
+      const ids = [me(), ...S.following];
+      const acts = await db.select('activities', { in:{ user_id:ids }, order:'created_at', limit:40 });
+      await hydrateActivities(acts);
+      return tabs + `<div class="feed-act-head"><span class="muted sp" style="font-size:14px">${L('Тренировки тех, на кого вы подписаны','Workouts from people you follow')}</span>
+          <button class="btn sm soft" data-act="recordActivity">${icon('plus','xs')} ${t('record')}</button><button class="btn sm acc" data-act="startTracker">${icon('timer','xs')} ${L('Старт','Start')}</button></div>
+        ${acts.length ? acts.map(a => activityCard(a)).join('') : `<div class="empty"><div class="big">${L('Пока пусто','Nothing yet')}</div><div>${L('Запишите первую тренировку.','Record your first workout.')}</div></div>`}`;
+    }
+    let posts = await db.select('posts', { eq:{ parent_id:null }, order:'created_at', limit:150 });
+    if (tab === 'following') posts = posts.filter(p => S.following.has(p.user_id) || p.user_id === me());
+    await hydratePosts(posts);
+    if (tab === 'foryou') posts.sort((a, b) => score(b) - score(a));
+    return tabs + composerHTML('feed') +
+      (posts.length ? posts.map(p => postCard(p)).join('') : `<div class="empty"><div class="big">${t('noPosts')}</div><div>${tab === 'following' ? t('noFollowing') : t('noPostsS')}</div></div>`);
+  }
+};
+
+VIEWS.post = {
+  async render(id){
+    const p = await db.one('posts', { id });
+    if (!p) return `<div class="empty"><div class="big">404</div><div>${L('Тред удалён или не существует','Thread was deleted or never existed')}</div></div>`;
+    const chain = []; let cur = p;
+    while (cur.parent_id && chain.length < 6){ const par = await db.one('posts', { id:cur.parent_id }); if (!par) break; chain.unshift(par); cur = par; }
+    const replies = await db.select('posts', { eq:{ parent_id:id }, order:'created_at', asc:true });
+    await hydratePosts([...chain, p, ...replies]);
+    return `
+      <div class="top"><div class="top-in"><button class="back" data-act="back">${icon('back')}</button><h1>${t('threads')}</h1></div></div>
+      ${chain.map(c => postCard(c, { chained:true })).join('')}
+      ${postCard(p, { main:true })}
+      ${composerHTML('reply-' + id, p)}
+      ${replies.map(r => postCard(r)).join('')}`;
+  }
+};
+
+VIEWS.explore = {
+  async render(){
+    const posts = await db.select('posts', { eq:{ parent_id:null }, order:'created_at', limit:300 });
+    S.explorePosts = posts;
+    const tagCount = {}, hashCount = {};
+    posts.forEach(p => {
+      if (p.tag) tagCount[p.tag] = (tagCount[p.tag]||0) + 1;
+      (p.content.match(/#[\p{L}\d_]+/gu) || []).forEach(h => hashCount[h.toLowerCase()] = (hashCount[h.toLowerCase()]||0) + 1);
+    });
+    const friends = Object.values(S.profiles).filter(p => mutual(p.id));
+    return `
+      <div class="hero-h"><div class="k">${t('explore')}</div><h2>${L('Найди','Find your')} <em>${L('своих.','people.')}</em></h2></div>
+      <div class="pad" style="padding-top:14px;padding-bottom:6px">
+        <div class="cbox" style="border-radius:16px;padding:4px 14px;align-items:center">${icon('search','sm')}<input id="exploreQ" class="sp" style="height:42px" placeholder="${L('Люди, @ник, текст тредов, #хэштег','People, @handle, thread text, #hashtag')}" value="${esc(S.exploreQ)}" autocomplete="off" /></div>
+      </div>
+      <div id="exploreRes">${exploreResults()}</div>
+      ${friends.length ? `<div class="section-t"><h3>${t('friends')}</h3><span class="muted" style="font-size:13.5px">${friends.length}</span></div><div class="pad" style="padding-top:0"><p class="muted" style="font-size:14px;margin-bottom:6px">${t('friendsHint')}</p>${friends.map(userRow).join('')}</div>` : ''}
+      <div class="section-t"><h3>${t('trending')}</h3></div>
+      <div class="pad" style="padding-top:0"><div class="chips">
+        ${Object.entries(tagCount).sort((a,b)=>b[1]-a[1]).map(([k,v]) => `<button class="tag ${k}" style="font-size:13.5px;padding:6px 12px" data-act="exploreSet" data-q="${t(k)}">${t(k)} · ${v}</button>`).join('')}
+        ${Object.entries(hashCount).sort((a,b)=>b[1]-a[1]).slice(0, 12).map(([h,v]) => `<a class="chip" href="#/tag/${encodeURIComponent(h.slice(1))}">${esc(h)} <span class="dim">${v}</span></a>`).join('')}
+      </div></div>
+      <div style="height:30px"></div>`;
+  },
+  after(){
+    const inp = $('#exploreQ');
+    let tm = null;
+    inp?.addEventListener('input', () => { S.exploreQ = inp.value; clearTimeout(tm); tm = setTimeout(async () => { $('#exploreRes').innerHTML = exploreResults(); await hydrateExplorePosts(); }, 160); });
+    hydrateExplorePosts();
+  }
+};
+function exploreMatches(){
+  const raw = S.exploreQ.trim().toLowerCase();
+  if (!raw) return { people:[], posts:[] };
+  const q = raw.replace(/^@/, '');
+  const people = Object.values(S.profiles).filter(p => p.id !== me() && ((p.name||'').toLowerCase().includes(q) || (p.username||'').toLowerCase().includes(q) || (p.bio||'').toLowerCase().includes(q)));
+  const tagKey = TAGS.find(k => t(k).toLowerCase() === raw);
+  const posts = raw.startsWith('@') ? [] : (S.explorePosts || []).filter(p => p.content.toLowerCase().includes(raw) || (tagKey && p.tag === tagKey)).slice(0, 20);
+  return { people, posts };
+}
+function exploreResults(){
+  const raw = S.exploreQ.trim();
+  if (!raw){
+    const list = Object.values(S.profiles).filter(p => p.id !== me() && !S.following.has(p.id)).slice(0, 8);
+    return `<div class="pad" style="padding-top:6px"><div class="muted" style="font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin:6px 0">${t('suggested')}</div>${list.length ? list.map(userRow).join('') : `<div class="muted" style="padding:10px 0">${L('Вы подписаны на всех 🎉','You follow everyone 🎉')}</div>`}</div>`;
+  }
+  const { people, posts } = exploreMatches();
+  if (!people.length && !posts.length) return `<div class="empty" style="padding:30px">${t('nobody')}</div>`;
+  return `${people.length ? `<div class="pad" style="padding-top:6px">${people.slice(0, 8).map(userRow).join('')}</div>` : ''}
+    ${posts.length ? `<div class="section-t"><h3>${t('threads')}</h3><span class="muted" style="font-size:13.5px">${posts.length}</span></div><div class="search-posts" id="explorePosts"></div>` : ''}`;
+}
+async function hydrateExplorePosts(){
+  const host = $('#explorePosts'); if (!host) return;
+  const { posts } = exploreMatches();
+  await hydratePosts(posts);
+  if ($('#explorePosts')) $('#explorePosts').innerHTML = posts.map(p => postCard(p)).join('');
+}
+
+VIEWS.tag = {
+  async render(tag){
+    const h = '#' + (tag || '').toLowerCase();
+    const posts = (await db.select('posts', { eq:{ parent_id:null }, order:'created_at', limit:300 })).filter(p => (p.content.match(/#[\p{L}\d_]+/gu) || []).some(x => x.toLowerCase() === h));
+    await hydratePosts(posts);
+    return `<div class="top"><div class="top-in"><button class="back" data-act="back">${icon('back')}</button><h1>${esc(h)}</h1><span class="muted" style="font-size:14px">${posts.length} ${t('threads').toLowerCase()}</span></div></div>
+      ${posts.length ? posts.map(p => postCard(p)).join('') : `<div class="empty"><div class="big">${t('noPosts')}</div></div>`}`;
+  }
+};
+
+/* ---------- PROFILE ---------- */
+VIEWS.profile = {
+  async render(id, tab){
+    id = id || me();
+    await ensureProfiles([id]);
+    const p = S.profiles[id];
+    if (!p) return `<div class="empty"><div class="big">404</div><div>${L('Профиль не найден','Profile not found')}</div></div>`;
+    const self = id === me();
+    tab = tab || 'threads';
+    const [fl, fg, posts, acts] = await Promise.all([
+      db.count('follows', { eq:{ following_id:id } }), db.count('follows', { eq:{ follower_id:id } }),
+      db.select('posts', { eq:{ user_id:id }, order:'created_at', limit:150 }),
+      db.select('activities', { eq:{ user_id:id }, order:'created_at', limit:400 }).catch(() => []),
+    ]);
+    const roots = posts.filter(x => !x.parent_id);
+    let body = '';
+    if (tab === 'threads' || tab === 'achievements'){
+      const list = tab === 'achievements' ? roots.filter(x => x.tag === 'achievement' || x.tag === 'progress') : roots;
+      await hydratePosts(list);
+      body = list.length ? list.map(x => postCard(x)).join('') : `<div class="empty"><div class="big">${t('noPosts')}</div>${self ? `<div>${t('noPostsS')}</div><button class="btn pri" style="margin-top:16px" data-act="compose">${icon('plus','xs')} ${t('newThread')}</button>` : ''}</div>`;
+    } else if (tab === 'replies'){
+      const list = posts.filter(x => x.parent_id);
+      await hydratePosts(list);
+      body = list.length ? list.map(x => postCard(x)).join('') : `<div class="empty"><div class="big">—</div></div>`;
+    } else if (tab === 'plan'){
+      const ws = await db.select('workouts', { eq:{ user_id:id } });
+      const vis = ws[0]?.visibility || 'public';
+      const can = self || vis === 'public' || (vis === 'friends' && mutual(id));
+      body = !ws.length ? `<div class="empty"><div class="big">${t('rest')}</div><div>${L('План ещё не составлен','No plan yet')}</div></div>`
+        : !can ? `<div class="empty"><div class="big">🔒</div><div>${t('planHidden')}</div></div>`
+        : `<div style="padding-top:18px">${weekGrid(ws, false)}</div><div class="wlist">${ws.sort((a,b) => a.day - b.day).map(w => workoutCard(w, self)).join('')}</div>${!self ? `<div class="pad"><button class="btn ghost" data-act="copyPlan" data-id="${id}">${icon('download','xs')} ${L('Скопировать план себе','Copy this plan to mine')}</button></div>` : ''}`;
+    } else if (tab === 'activities'){
+      const vis = acts.filter(a => self || a.visibility !== 'private');
+      await hydrateActivities(vis.slice(0, 30));
+      body = vis.length ? vis.slice(0, 30).map(a => activityCard(a)).join('') : `<div class="empty"><div class="big">—</div><div>${L('Нет активностей','No activities')}</div></div>`;
+    } else if (tab === 'saved' && self){
+      const bms = await db.select('bookmarks', { eq:{ user_id:me() }, order:'created_at' });
+      const list = (await Promise.all(bms.map(b => db.one('posts', { id:b.post_id })))).filter(Boolean);
+      await hydratePosts(list);
+      body = list.length ? list.map(x => postCard(x)).join('') : `<div class="empty"><div class="big">${t('saved')}</div><div>${L('Сохраняйте полезные треды значком закладки.','Save useful threads with the bookmark icon.')}</div></div>`;
+    }
+    const f = S.following.has(id);
+    const tabs = ['threads','replies','activities','plan','achievements', ...(self ? ['saved'] : [])];
+    const tabName = k => ({ replies:L('Ответы','Replies'), activities:t('activities') })[k] || t(k);
+    const streakDays = calcActStreak(acts);
+    return `
+      <div class="top"><div class="top-in"><button class="back" data-act="back">${icon('back')}</button><h1>${esc(p.name)}</h1>${self ? `<a class="ibtn" href="#/settings">${icon('settings','sm')}</a>` : ''}</div></div>
+      <section class="prof fade-in">
+        <div class="prof-top">
+          <div class="t">
+            <h2>${esc(p.name)}${verified(p)}</h2>
+            <div class="un">@${esc(p.username)} ${p.role === 'admin' ? `<span class="goal-pill">${icon('shield','xs')} ${t('admin')}</span>` : ''} ${p.goal ? `<span class="goal-pill">${GOAL_NAME(p.goal)}</span>` : ''}</div>
+          </div>
+          ${avatar(p, 'l')}
+        </div>
+        ${p.bio ? `<div class="bio">${richText(p.bio)}</div>` : ''}
+        <div class="stats">
+          <button data-act="followList" data-id="${id}" data-kind="followers"><b>${fmtNum(fl)}</b> ${t('followers')}</button>
+          <button data-act="followList" data-id="${id}" data-kind="following"><b>${fmtNum(fg)}</b> ${t('followingCnt')}</button>
+          ${streakDays ? `<span><b>${streakDays}</b> 🔥 ${t('streak')}</span>` : ''}
+          ${!self && S.followers.has(id) ? `<span>· ${t('you_follow')}</span>` : ''}
+        </div>
+        <div class="acts">
+          ${self ? `<button class="btn ghost" data-act="editProfile">${t('editProfile')}</button><button class="btn ghost" data-act="share" data-profile="${id}">${t('copyLink')}</button>`
+                 : `<button class="btn ${f ? 'ghost' : 'pri'}" data-act="follow" data-id="${id}" data-reload="1">${f ? t('followingBtn') : t('follow')}</button><a class="btn ghost" href="#/messages/${id}">${t('message')}</a>`}
+        </div>
+      </section>
+      <div class="section-t" style="padding-top:4px"><h3>${L('Тренировочный граф','Training graph')}</h3><span class="muted" style="font-size:13.5px">${acts.filter(a => a.date >= addDays(todayStr(), -364)).length} ${L('за год','this year')}</span></div>
+      ${heatmapHTML(acts, 26)}
+      <div class="tabs" style="margin-top:14px">
+        ${tabs.map(k => `<a class="tab ${tab===k?'on':''}" href="#/profile/${id}/${k}">${tabName(k)}</a>`).join('')}
+      </div>
+      ${body}
+      <div style="height:30px"></div>`;
+  }
+};
+async function showFollowList(id, kind){
+  const rows = kind === 'followers' ? await db.select('follows', { eq:{ following_id:id } }) : await db.select('follows', { eq:{ follower_id:id } });
+  const ids = rows.map(r => kind === 'followers' ? r.follower_id : r.following_id);
+  await ensureProfiles(ids);
+  const list = ids.map(i => S.profiles[i]).filter(Boolean);
+  modal(`<div class="modal-h"><b>${kind === 'followers' ? t('followers') : t('followingCnt')}</b><button class="ibtn" data-act="closeModal">${icon('x','sm')}</button></div>
+    <div class="modal-b" style="gap:0">${list.length ? list.map(userRow).join('') : `<div class="muted" style="padding:20px 0;text-align:center">—</div>`}</div>`);
+}
+
+
+/* Module 3: d_activity.js */
+
+/* =============================================================================
+   16b. ACTIVITY (как Strava): записи тренировок, респекты, граф, лидерборд
+   ============================================================================= */
+async function hydrateActivities(acts){
+  if (!acts.length) return acts;
+  const kd = await db.select('kudos', { in:{ activity_id:acts.map(a => a.id) } }).catch(() => []);
+  acts.forEach(a => {
+    const k = kd.filter(x => x.activity_id === a.id);
+    a._kudos = k.length; a._mine = k.some(x => x.user_id === me()); a._kudosBy = k.slice(-3).map(x => x.user_id);
+  });
+  await ensureProfiles([...acts.map(a => a.user_id), ...kd.map(k => k.user_id)]);
+  return acts;
+}
+function hashStr(s){ let h = 2166136261; for (const c of String(s)) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+function routeSVG(a){
+  // генеративный «GPS-трек» из id: стабилен для одной активности
+  let h = hashStr(a.id);
+  const rnd = () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) >>> 0) % 10000) / 10000;
+  const W = 600, H = 150, n = 46;
+  let x = 40 + rnd()*80, y = 40 + rnd()*70, ang = rnd() * Math.PI * 2;
+  const pts = [];
+  for (let i = 0; i < n; i++){
+    ang += (rnd() - .5) * 1.1;
+    x = clamp(x + Math.cos(ang) * 14, 16, W - 16); y = clamp(y + Math.sin(ang) * 7, 14, H - 14);
+    if (x <= 16 || x >= W - 16) ang = Math.PI - ang;
+    if (y <= 14 || y >= H - 14) ang = -ang;
+    pts.push([x, y]);
+  }
+  const d = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+  const s = pts[0], e = pts.at(-1);
+  const grid = Array.from({ length:12 }, (_, i) => `<path d="M${i*55} 0V${H}" stroke="#151612"/>`).join('') + Array.from({ length:4 }, (_, i) => `<path d="M0 ${i*45}H${W}" stroke="#151612"/>`).join('');
+  return `<div class="route"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${grid}
+    <path d="${d}" fill="none" stroke="#D4FF3F" stroke-opacity=".18" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="${d}" fill="none" stroke="#D4FF3F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${s[0]}" cy="${s[1]}" r="5" fill="#0A0A0A" stroke="#D4FF3F" stroke-width="2.5"/><circle cx="${e[0]}" cy="${e[1]}" r="5" fill="#D4FF3F"/></svg></div>`;
+}
+const pace = a => { if (!a.distance_km) return '—'; const s = a.duration_s / a.distance_km; return `${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,'0')}`; };
+function activityCard(a){
+  const u = S.profiles[a.user_id] || { name:'—', username:'—' };
+  const T = ACT_TYPES[a.type] || ACT_TYPES.gym;
+  const stats = [];
+  if (T.dist && a.distance_km) stats.push([L('Дистанция','Distance'), `${round(a.distance_km, 1)} ${L('км','km')}`]);
+  stats.push([L('Время','Time'), fmtDur(a.duration_s)]);
+  if (a.type === 'run' || a.type === 'walk') stats.push([L('Темп','Pace'), pace(a) + L(' /км',' /km')]);
+  else if (a.type === 'ride' && a.distance_km) stats.push([L('Скорость','Speed'), round(a.distance_km / (a.duration_s/3600), 1) + L(' км/ч',' km/h')]);
+  if (a.type === 'gym' && a.volume_kg) stats.push([L('Объём','Volume'), fmtNum(a.volume_kg) + ' ' + t('kg')]);
+  if (a.kcal) stats.push([t('kcal'), fmtNum(a.kcal)]);
+  return `<article class="acard fade-in">
+    <div class="h"><a href="#/profile/${a.user_id}">${avatar(u,'s')}</a><div class="t"><b>${esc(u.name)}</b>${verified(u)}<span>${dayLabel(a.date)} · ${new Date(a.created_at).toLocaleTimeString(LANG==='ru'?'ru-RU':'en-US', { hour:'2-digit', minute:'2-digit' })} · ${actName(a.type)}</span></div>
+      ${a.user_id === me() ? `<button class="ibtn" data-act="delActivity" data-id="${a.id}" aria-label="${t('delete')}">${icon('trash','xs')}</button>` : ''}</div>
+    <h4><span class="atype">${T.e}</span>${esc(a.title || actName(a.type))}</h4>
+    ${a.notes ? `<div class="notes">${richText(a.notes)}</div>` : ''}
+    <div class="st">${stats.map(([k, v]) => `<div><span>${k}</span><b>${v}</b></div>`).join('')}</div>
+    ${T.dist && a.distance_km ? routeSVG(a) : ''}
+    <div class="foot2">
+      <button class="kudos ${a._mine ? 'on' : ''}" data-act="kudos" data-id="${a.id}" ${a.user_id === me() ? 'disabled style="opacity:.8;cursor:default"' : ''}>${icon('bolt','xs')} ${a._kudos || 0} ${t('kudos')}</button>
+      <div class="stack-av">${(a._kudosBy || []).map(id => avatar(S.profiles[id], 'xs')).join('')}</div>
+    </div>
+  </article>`;
+}
+
+/* ---------- FitHub graph (как contribution graph на GitHub) ---------- */
+function heatmapHTML(acts, weeks=26){
+  const byDate = {};
+  acts.forEach(a => { byDate[a.date] = (byDate[a.date] || 0) + (+a.duration_s || 0); });
+  const end = addDays(todayStr(), 6 - todayDow());     // воскресенье этой недели
+  const start = addDays(end, -(weeks * 7) + 1);
+  const cells = []; const months = [];
+  let lastM = -1;
+  for (let i = 0; i < weeks * 7; i++){
+    const d = addDays(start, i);
+    if (i % 7 === 0){ const m = new Date(d + 'T12:00:00').getMonth(); months.push(m !== lastM ? new Date(d + 'T12:00:00').toLocaleDateString(LANG==='ru'?'ru-RU':'en-US', { month:'short' }) : ''); lastM = m; }
+    const sec = byDate[d] || 0, min = sec / 60;
+    const lv = d > todayStr() ? 'fut' : !sec ? '' : min < 30 ? 'l1' : min < 50 ? 'l2' : min < 80 ? 'l3' : 'l4';
+    cells.push(`<i class="${lv}" title="${d}${sec ? ' · ' + fmtDur(sec) : ''}"></i>`);
+  }
+  return `<div class="heat-months">${months.map(m => `<span style="width:16px;flex:none;overflow:visible;white-space:nowrap">${m}</span>`).join('')}</div>
+    <div class="heat-wrap"><div class="heat">${cells.join('')}</div></div>
+    <div class="heat-legend">${L('Меньше','Less')} <i style="background:var(--heat0)"></i><i style="background:var(--heat1)"></i><i style="background:var(--heat2)"></i><i style="background:var(--heat3)"></i><i style="background:var(--heat4)"></i> ${L('Больше','More')}</div>`;
+}
+function calcActStreak(acts){
+  const days = new Set(acts.map(a => a.date));
+  let s = 0, d = todayStr();
+  if (!days.has(d)) d = addDays(d, -1);
+  while (days.has(d)) { s++; d = addDays(d, -1); }
+  return s;
+}
+
+VIEWS.activity = {
+  async render(){
+    const mine = await db.select('activities', { eq:{ user_id:me() }, order:'created_at', limit:500 });
+    const ws = weekStart();
+    const week = mine.filter(a => a.date >= ws);
+    const prevWeek = mine.filter(a => a.date >= addDays(ws, -7) && a.date < ws);
+    const sum = (arr, k) => arr.reduce((s, a) => s + (+a[k] || 0), 0);
+    const delta = (cur, prev) => !prev ? '' : `<span style="color:${cur >= prev ? 'var(--accent)' : 'var(--f)'};font-size:12.5px;font-weight:700"> ${cur >= prev ? '▲' : '▼'} ${Math.abs(Math.round((cur - prev) / prev * 100))}%</span>`;
+    // 7 последних дней
+    const days7 = Array.from({ length:7 }, (_, i) => addDays(todayStr(), i - 6));
+    const mins7 = days7.map(d => sum(mine.filter(a => a.date === d), 'duration_s') / 60);
+    const mx = Math.max(60, ...mins7);
+    // лидерборд недели: я + подписки
+    const ids = [me(), ...S.following];
+    const all = await db.select('activities', { in:{ user_id:ids }, gte:{ date:ws } });
+    const board = ids.map(id => ({ id, sec: sum(all.filter(a => a.user_id === id), 'duration_s') })).filter(x => x.sec || x.id === me()).sort((a, b) => b.sec - a.sec);
+    await ensureProfiles(ids);
+    const top = board[0]?.sec || 1;
+    const recent = mine.slice(0, 12);
+    await hydrateActivities(recent);
+    const typeCount = {}; mine.filter(a => a.date >= addDays(todayStr(), -30)).forEach(a => typeCount[a.type] = (typeCount[a.type] || 0) + 1);
+    return `
+      <div class="hero-h" style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap">
+        <div class="sp"><div class="k">${t('activity')}</div><h2>${L('Каждый день','Every day')} <em>${L('в граф.','counts.')}</em></h2></div>
+        <button class="btn soft" data-act="recordActivity">${icon('plus','sm')} ${t('record')}</button>
+        <button class="btn acc" data-act="startTracker">${icon('timer','sm')} ${L('Старт секундомера','Start tracker')}</button>
+      </div>
+      <div class="act-stats">
+        <div class="card"><b>${fmtDur(sum(week,'duration_s'))}</b><span>${L('время','time')}${delta(sum(week,'duration_s'), sum(prevWeek,'duration_s'))}</span></div>
+        <div class="card"><b>${week.length}</b><span>${L('активностей','activities')}${delta(week.length, prevWeek.length)}</span></div>
+        <div class="card"><b>${round(sum(week,'distance_km'), 1)}</b><span>${L('км','km')}${delta(sum(week,'distance_km'), sum(prevWeek,'distance_km'))}</span></div>
+        <div class="card"><b>${calcActStreak(mine)}</b><span>${L('дней подряд','day streak')} 🔥</span></div>
+      </div>
+      <div class="section-t" style="padding-top:6px"><h3>${L('Последние 7 дней','Last 7 days')}</h3><span class="muted mono" style="font-size:13px">${Math.round(mins7.reduce((a,b)=>a+b,0))} ${L('мин','min')}</span></div>
+      <div class="bars7">${days7.map((d, i) => `<div title="${Math.round(mins7[i])} min"><i class="${d === todayStr() ? 'on' : ''}" style="height:${Math.max(4, mins7[i] / mx * 100)}%"></i><span>${DOW()[(new Date(d + 'T12:00:00').getDay() + 6) % 7]}</span></div>`).join('')}</div>
+      <div class="section-t"><h3>${L('Тренировочный граф','Training graph')}</h3><span class="muted" style="font-size:13.5px">${L('полгода','6 months')}</span></div>
+      ${heatmapHTML(mine, 26)}
+      ${Object.keys(typeCount).length ? `<div class="pill-row" style="margin-top:14px">${Object.entries(typeCount).sort((a,b) => b[1]-a[1]).map(([k, v]) => `<span class="chip">${ACT_TYPES[k]?.e || ''} ${actName(k)} · ${v}</span>`).join('')}<span class="muted" style="font-size:13px;align-self:center">${L('за 30 дней','last 30 days')}</span></div>` : ''}
+      <div class="section-t"><h3>${icon('trophy','sm')} ${L('Лидерборд недели','Weekly leaderboard')}</h3><span class="muted" style="font-size:13.5px">${L('вы и подписки','you & following')}</span></div>
+      <div class="pad" style="padding-top:0">
+        ${board.length > 1 ? board.slice(0, 10).map((r, i) => { const p = S.profiles[r.id] || {}; return `<a class="lb-row" href="#/profile/${r.id}"><span class="pos ${i < 3 ? 'g' : ''}">${i + 1}</span>${avatar(p,'s')}<div class="t"><b>${esc(r.id === me() ? t('you') : p.name)}</b><div class="meter"><i style="width:${r.sec / top * 100}%"></i></div></div><span class="v">${fmtDur(r.sec)}</span></a>`; }).join('')
+          : `<div class="muted" style="font-size:14px">${L('Подпишитесь на людей, чтобы соревноваться.','Follow people to compete.')}</div>`}
+      </div>
+      <div class="section-t"><h3>${L('Мои активности','My activities')}</h3></div>
+      ${recent.length ? recent.map(a => activityCard(a)).join('') : `<div class="empty"><div class="big">${L('Пусто','Empty')}</div><div>${L('Запишите первую активность.','Record your first activity.')}</div></div>`}
+      <div style="height:40px"></div>`;
+  }
+};
+
+function activityForm(pre={}){
+  const typ = pre.type || 'gym';
+  const dur = pre.duration_s || 3600;
+  modal(`<div class="modal-h"><b>${L('Новая активность','New activity')}</b><button class="ibtn" data-act="closeModal">${icon('x','sm')}</button></div>
+    <form data-form="activity" class="modal-b">
+      <div class="field"><label>${L('Тип','Type')}</label><div class="chips" id="actTypes">${Object.entries(ACT_TYPES).map(([k, v]) => `<button type="button" class="chip ${k === typ ? 'on' : ''}" data-act="pickActType" data-v="${k}">${v.e} ${actName(k)}</button>`).join('')}</div><input type="hidden" name="type" value="${typ}" /></div>
+      <div class="field"><label>${L('Название','Title')}</label><input class="inp" name="title" value="${esc(pre.title || '')}" placeholder="${L('Утренняя пробежка','Morning run')}" maxlength="80" /></div>
+      <div class="grid3">
+        <div class="field"><label>${L('Часы','Hours')}</label><input class="inp mono" name="h" type="number" min="0" max="24" value="${Math.floor(dur/3600)}" /></div>
+        <div class="field"><label>${L('Минуты','Minutes')}</label><input class="inp mono" name="m" type="number" min="0" max="59" value="${Math.floor(dur%3600/60)}" /></div>
+        <div class="field" id="distField" style="${ACT_TYPES[typ].dist ? '' : 'opacity:.35'}"><label>${L('Дистанция, км','Distance, km')}</label><input class="inp mono" name="distance_km" type="number" step="0.01" min="0" max="500" value="${pre.distance_km || ''}" /></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>${L('Дата','Date')}</label><input class="inp mono" name="date" type="date" value="${pre.date || todayStr()}" max="${todayStr()}" /></div>
+        <div class="field"><label>${t('visibility')}</label><select class="inp" name="visibility">${['public','friends','private'].map(v => `<option value="${v}">${t('v' + v[0].toUpperCase() + v.slice(1))}</option>`).join('')}</select></div>
+      </div>
+      ${pre.volume_kg ? `<input type="hidden" name="volume_kg" value="${pre.volume_kg}" /><input type="hidden" name="sets" value="${pre.sets || 0}" />` : ''}
+      <div class="field"><label>${L('Заметки','Notes')}</label><textarea class="inp" name="notes" rows="3" placeholder="${L('Как прошло? #хэштеги работают','How did it go? #hashtags work')}">${esc(pre.notes || '')}</textarea></div>
+      <label class="toggle-row"><input type="checkbox" name="share" ${pre.share ? 'checked' : ''} /> <span>${L('Опубликовать тредом в ленте','Also post as a thread')}</span></label>
+      <div class="modal-f" style="padding:0"><button type="button" class="btn ghost" data-act="closeModal">${t('cancel')}</button><button class="btn acc" type="submit">${t('save')}</button></div>
+    </form>`);
+}
+async function saveActivity(d){
+  const sec = (+d.h || 0) * 3600 + (+d.m || 0) * 60 + (+d.s || 0);
+  if (sec < 60) { toast(L('Минимум 1 минута','At least 1 minute'), true); return null; }
+  const T = ACT_TYPES[d.type] || ACT_TYPES.gym;
+  const w = +S.user.weight || 75;
+  const row = {
+    user_id:me(), type:d.type, title:(d.title || '').trim() || actName(d.type), duration_s:sec,
+    distance_km: T.dist ? (+d.distance_km || 0) : 0, volume_kg:+d.volume_kg || 0, sets:+d.sets || 0,
+    kcal: Math.round(T.met * w * sec / 3600), notes:(d.notes || '').trim(), visibility:d.visibility || 'public', date:d.date || todayStr()
+  };
+  const a = await db.insert('activities', row);
+  if (d.share){
+    const parts = [`${T.e} ${row.title}`, `${fmtDur(sec)}${row.distance_km ? ' · ' + row.distance_km + L(' км',' km') : ''}${row.volume_kg ? ' · ' + fmtNum(row.volume_kg) + ' ' + t('kg') : ''}`];
+    if (row.notes) parts.push(row.notes);
+    await db.insert('posts', { user_id:me(), content:parts.join('\n\n') + '\n\n#fithub', tag:'progress', parent_id:null, image_url:'' });
+  }
+  toast(L('Активность сохранена 💪','Activity saved 💪'));
+  return a;
+}
+
+/* ---------- живой секундомер ---------- */
+const TR = { on:false, start:0, acc:0, paused:false, type:'run', iv:null, wake:null };
+function openTracker(){
+  TR.on = true; TR.start = Date.now(); TR.acc = 0; TR.paused = false;
+  const el = document.createElement('div'); el.className = 'tracker'; el.id = 'tracker';
+  el.innerHTML = `
+    <div class="row" style="gap:10px;color:var(--muted);font-size:13px;letter-spacing:.16em;text-transform:uppercase;font-weight:700"><span class="pulse-dot" id="trDot"></span><span id="trState">${L('Запись','Recording')}</span></div>
+    <div class="big" id="trClock">0:00</div>
+    <div class="types">${Object.entries(ACT_TYPES).map(([k, v]) => `<button class="chip ${k === TR.type ? 'on' : ''}" data-act="trType" data-v="${k}">${v.e} ${actName(k)}</button>`).join('')}</div>
+    <div class="row" style="gap:10px">
+      <button class="btn ghost" data-act="trPause" id="trPauseBtn" style="height:54px;padding:0 24px">${icon('pause','sm')} ${L('Пауза','Pause')}</button>
+      <button class="btn acc" data-act="trFinish" style="height:54px;padding:0 28px">${icon('stop','sm')} ${L('Завершить','Finish')}</button>
+    </div>
+    <button class="btn sm ghost" data-act="trCancel" style="margin-top:6px">${t('cancel')}</button>`;
+  document.body.appendChild(el);
+  TR.iv = setInterval(paintTracker, 250);
+  try { navigator.wakeLock?.request('screen').then(w => TR.wake = w).catch(() => {}); } catch(e){}
+}
+const trElapsed = () => (TR.acc + (TR.paused ? 0 : Date.now() - TR.start)) / 1000;
+function paintTracker(){ const c = $('#trClock'); if (c) c.textContent = fmtClock(trElapsed()); }
+function closeTracker(){ clearInterval(TR.iv); TR.on = false; try { TR.wake?.release(); } catch(e){} $('#tracker')?.remove(); }
+function trTogglePause(){
+  if (TR.paused){ TR.start = Date.now(); TR.paused = false; }
+  else { TR.acc += Date.now() - TR.start; TR.paused = true; }
+  $('#trClock')?.classList.toggle('paused', TR.paused);
+  $('#trDot').style.visibility = TR.paused ? 'hidden' : 'visible';
+  $('#trState').textContent = TR.paused ? L('Пауза','Paused') : L('Запись','Recording');
+  $('#trPauseBtn').innerHTML = TR.paused ? `${icon('play','sm')} ${L('Продолжить','Resume')}` : `${icon('pause','sm')} ${L('Пауза','Pause')}`;
+}
+function trFinish(){
+  const sec = Math.round(trElapsed());
+  closeTracker();
+  if (sec < 60) return toast(L('Слишком коротко: меньше минуты','Too short: under a minute'), true);
+  activityForm({ type:TR.type, duration_s:sec, title:actName(TR.type) });
+}
+
+
+/* Module 4: e_nutrition.js */
+// ===== NUTRITION & FOOD SCANNER VIEW =====
+// Food detection by photo, KBZHU analysis, meal planning, history
+
+const NutritionModule = {
+  renderFoodScannerView: (nutrients) => {
+    const container = document.getElementById('view-container');
+    const historyDays = (nutrients.mealHistory || []).slice(-7);
+    const avgKBZHU = NutritionModule.computeAvgKBZHU(historyDays);
+    
+    container.innerHTML = `
+      <div class="nutrition-view">
+        <div class="nutrition-header">
+          <h2>${i18n.nutrition}</h2>
+          <div class="nutrition-stats">
+            <div class="stat">
+              <span class="stat-label">${i18n.calories}</span>
+              <span class="stat-value">${Math.round(avgKBZHU.calories)}</span>
+              <span class="stat-unit">kcal</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">${i18n.protein}</span>
+              <span class="stat-value">${Math.round(avgKBZHU.protein)}g</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">${i18n.carbs}</span>
+              <span class="stat-value">${Math.round(avgKBZHU.carbs)}g</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">${i18n.fat}</span>
+              <span class="stat-value">${Math.round(avgKBZHU.fat)}g</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="nutrition-tabs">
+          <button class="tab-btn active" data-tab="scanner">${i18n.scan}</button>
+          <button class="tab-btn" data-tab="history">${i18n.history}</button>
+          <button class="tab-btn" data-tab="targets">${i18n.goals}</button>
+        </div>
+
+        <div class="nutrition-tab-content">
+          <!-- Scanner Tab -->
+          <div id="scanner" class="tab-pane active">
+            <div class="scanner-card">
+              <div class="scanner-upload">
+                <div class="upload-icon">📷</div>
+                <h3>${i18n.scanMeal}</h3>
+                <p>${i18n.uploadFoodPhoto}</p>
+                <input type="file" class="file-input" id="food-photo" accept="image/*" data-act="uploadFoodPhoto" />
+                <label for="food-photo" class="btn btn-primary">${i18n.choosePhoto}</label>
+              </div>
+              <div id="scanner-result" class="scanner-result hidden">
+                <div class="food-items">
+                  <!-- Items populated by uploadFoodPhoto handler -->
+                </div>
+                <div class="food-summary">
+                  <button class="btn btn-primary" data-act="saveMeal">${i18n.addToLog}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- History Tab -->
+          <div id="history" class="tab-pane">
+            <div class="meal-timeline">
+              ${historyDays.length ? historyDays.map(day => `
+                <div class="meal-day">
+                  <h4 class="meal-date">${new Date(day.date).toLocaleDateString()}</h4>
+                  <div class="meals-list">
+                    ${(day.meals || []).map(meal => `
+                      <div class="meal-item">
+                        <div class="meal-info">
+                          <span class="meal-name">${meal.name}</span>
+                          <span class="meal-time">${meal.time || '—'}</span>
+                        </div>
+                        <div class="meal-kbzhu">
+                          <span>${meal.calories}kcal</span> <span>${meal.protein}p/${meal.carbs}c/${meal.fat}f</span>
+                        </div>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              `).join('') : `<p class="empty-state">${i18n.noMeals}</p>`}
+            </div>
+          </div>
+
+          <!-- Targets Tab -->
+          <div id="targets" class="tab-pane">
+            <div class="targets-card">
+              <h3>${i18n.dailyGoals}</h3>
+              <form data-act="saveNutritionTargets">
+                <div class="form-group">
+                  <label>${i18n.calories}</label>
+                  <input type="number" name="calorieTarget" value="${nutrients.targets?.calories || 2200}" min="1000" max="5000" />
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>${i18n.protein}</label>
+                    <input type="number" name="proteinTarget" value="${nutrients.targets?.protein || 150}" min="10" max="300" /> g
+                  </div>
+                  <div class="form-group">
+                    <label>${i18n.carbs}</label>
+                    <input type="number" name="carbsTarget" value="${nutrients.targets?.carbs || 250}" min="10" max="500" /> g
+                  </div>
+                  <div class="form-group">
+                    <label>${i18n.fat}</label>
+                    <input type="number" name="fatTarget" value="${nutrients.targets?.fat || 70}" min="10" max="200" /> g
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary">${i18n.save}</button>
+              </form>
+              <div class="targets-tips">
+                <p><strong>Совет:</strong> Среднестатистическому человеку для баланса нужно ~0.8-1g белка на 1kg веса в день.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+        e.target.classList.add('active');
+        document.getElementById(e.target.dataset.tab).classList.add('active');
+      });
+    });
+  },
+
+  computeAvgKBZHU: (days) => {
+    if (!days.length) return { calories: 0, protein: 0, carbs: 0, fat: 0 };
+    const totals = days.reduce((acc, day) => {
+      const meals = day.meals || [];
+      acc.cal += meals.reduce((s, m) => s + (m.calories || 0), 0);
+      acc.pro += meals.reduce((s, m) => s + (m.protein || 0), 0);
+      acc.carbs += meals.reduce((s, m) => s + (m.carbs || 0), 0);
+      acc.fat += meals.reduce((s, m) => s + (m.fat || 0), 0);
+      return acc;
+    }, { cal: 0, pro: 0, carbs: 0, fat: 0 });
+    return {
+      calories: totals.cal / days.length,
+      protein: totals.pro / days.length,
+      carbs: totals.carbs / days.length,
+      fat: totals.fat / days.length
+    };
+  },
+
+  // Simulated food detection (in real app, this calls a food-detection API)
+  detectFood: (imageDataUrl) => {
+    // Mock detection result from image
+    const mockFoods = [
+      { name: 'Chicken Breast', portion: '150g', calories: 165, protein: 31, carbs: 0, fat: 3.6 },
+      { name: 'Brown Rice', portion: '100g', calories: 112, protein: 2.6, carbs: 24, fat: 0.9 },
+      { name: 'Broccoli', portion: '100g', calories: 34, protein: 2.8, carbs: 7, fat: 0.4 }
+    ];
+    return mockFoods;
+  }
+};
+
+
+/* Module 5: f_sessions.js */
+// ===== SESSIONS & WORKOUT PLAYER VIEW =====
+// Workout execution, rest timer, form-based or Strava-style session playback, summary
+
+const SessionModule = {
+  currentSession: null,
+  sessionTimer: null,
+
+  renderSessionsView: (sessions) => {
+    const container = document.getElementById('view-container');
+    const activeSession = sessions.find(s => s.status === 'active');
+    
+    container.innerHTML = `
+      <div class="sessions-view">
+        <div class="sessions-header">
+          <h2>${i18n.workouts}</h2>
+        </div>
+
+        ${activeSession ? `
+          <div class="session-player-card">
+            <div class="player-header">
+              <h3>${activeSession.name}</h3>
+              <button class="close-btn" data-act="endSession" title="${i18n.finish}">✕</button>
+            </div>
+            <div class="player-content">
+              <div class="exercise-list">
+                ${(activeSession.exercises || []).map((ex, i) => `
+                  <div class="exercise-item ${ex.completed ? 'completed' : ''}">
+                    <div class="exercise-order">${i + 1}</div>
+                    <div class="exercise-details">
+                      <span class="exercise-name">${ex.name}</span>
+                      <span class="exercise-spec">${ex.sets}×${ex.reps} • ${ex.weight || '—'}kg</span>
+                    </div>
+                    <div class="exercise-status">
+                      ${ex.completed ? '✓' : '→'}
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+              <div class="player-controls">
+                <button class="btn btn-primary" data-act="markExerciseDone">${i18n.nextExercise}</button>
+                <button class="btn btn-secondary" data-act="toggleRestOverlay">${i18n.startRest}</button>
+              </div>
+            </div>
+          </div>
+        ` : ''}
+
+        <div class="sessions-list">
+          <h3>${i18n.pastWorkouts}</h3>
+          ${sessions.filter(s => s.status !== 'active').length ? sessions.filter(s => s.status !== 'active').map(session => `
+            <div class="session-card">
+              <div class="session-card-header">
+                <span class="session-name">${session.name}</span>
+                <span class="session-date">${new Date(session.date).toLocaleDateString()}</span>
+              </div>
+              <div class="session-card-stats">
+                <span class="stat">${session.duration}'</span>
+                <span class="stat">${session.exerciseCount || 0} упр.</span>
+                <span class="stat">${session.volume || 0} кг</span>
+              </div>
+              <div class="session-card-footer">
+                <button class="btn-text" data-act="viewSessionDetail" data-id="${session.id}">${i18n.details}</button>
+                <button class="btn-text" data-act="shareSession" data-id="${session.id}">${i18n.share}</button>
+              </div>
+            </div>
+          `).join('') : `<p class="empty-state">${i18n.noSessions}</p>`}
+        </div>
+
+        <div class="session-actions">
+          <button class="btn btn-primary btn-large" data-act="startNewSession">${i18n.startWorkout}</button>
+        </div>
+      </div>
+    `;
+
+    // Rest overlay (modal)
+    if (activeSession) {
+      SessionModule.setupRestOverlay(activeSession);
+    }
+  },
+
+  setupRestOverlay: (session) => {
+    const overlay = document.createElement('div');
+    overlay.id = 'rest-overlay';
+    overlay.className = 'rest-overlay hidden';
+    overlay.innerHTML = `
+      <div class="rest-modal">
+        <div class="rest-header">
+          <h3>${i18n.rest}</h3>
+          <button class="close-btn" data-act="toggleRestOverlay">✕</button>
+        </div>
+        <div class="rest-timer">
+          <div class="timer-display">
+            <span class="timer-value">3:00</span>
+            <span class="timer-label">мин</span>
+          </div>
+          <div class="timer-controls">
+            <button class="btn btn-secondary" data-act="pauseRestTimer">${i18n.pause}</button>
+            <button class="btn btn-primary" data-act="skipRest">${i18n.skip}</button>
+          </div>
+        </div>
+        <div class="rest-suggestions">
+          <p>💧 Пей воду</p>
+          <p>🧘 Восстанавливайся</p>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+  },
+
+  toggleRestOverlay: () => {
+    const overlay = document.getElementById('rest-overlay');
+    overlay?.classList.toggle('hidden');
+  },
+
+  startRestTimer: (duration = 180) => {
+    let remaining = duration;
+    SessionModule.sessionTimer = setInterval(() => {
+      remaining--;
+      const display = document.querySelector('.timer-value');
+      if (display) {
+        const mins = Math.floor(remaining / 60);
+        const secs = remaining % 60;
+        display.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+      }
+      if (remaining <= 0) {
+        clearInterval(SessionModule.sessionTimer);
+        SessionModule.toggleRestOverlay();
+      }
+    }, 1000);
+  },
+
+  markExerciseDone: (sessionId) => {
+    // Mark current exercise as completed, move to next
+    const exercises = SessionModule.currentSession.exercises || [];
+    const nextIndex = exercises.findIndex(ex => !ex.completed);
+    if (nextIndex >= 0) {
+      exercises[nextIndex].completed = true;
+    }
+    // Re-render with updated state
+    SessionModule.renderSessionsView([SessionModule.currentSession]);
+  },
+
+  startNewSession: (workoutTemplateId) => {
+    // Create new active session from template
+    SessionModule.currentSession = {
+      id: 'session_' + Date.now(),
+      name: 'Workout ' + new Date().toLocaleDateString(),
+      status: 'active',
+      date: new Date(),
+      exercises: [
+        { name: 'Warm-up', sets: 1, reps: '5 min', weight: null, completed: false },
+        { name: 'Squats', sets: 4, reps: 8, weight: 100, completed: false },
+        { name: 'Bench Press', sets: 4, reps: 8, weight: 80, completed: false },
+        { name: 'Rows', sets: 4, reps: 8, weight: 85, completed: false }
+      ],
+      duration: 0,
+      volume: 0,
+      exerciseCount: 4
+    };
+  }
+};
+
+
+/* Module 6: g_messaging.js */
+// ===== MESSAGES & NOTIFICATIONS VIEW =====
+// DM chats, threads, notifications inbox, real-time listeners
+
+const MessagingModule = {
+  currentChat: null,
+
+  renderMessagesView: (chats) => {
+    const container = document.getElementById('view-container');
+    
+    container.innerHTML = `
+      <div class="messages-view">
+        <div class="messages-header">
+          <h2>${i18n.messages}</h2>
+          <button class="btn-icon" data-act="startNewChat" title="${i18n.newMessage}">✎</button>
+        </div>
+
+        <div class="chat-list">
+          ${chats && chats.length ? chats.map(chat => `
+            <div class="chat-item ${chat.unread ? 'unread' : ''}" data-act="openChat" data-id="${chat.id}">
+              <div class="chat-avatar">
+                <img src="${chat.avatar || 'data:image/svg+xml,%3Csvg%3E%3Ccircle cx=20 cy=20 r=20 fill=%23999/%3E%3C/svg%3E'}" alt="" />
+              </div>
+              <div class="chat-info">
+                <span class="chat-name">${chat.name}</span>
+                <span class="chat-preview">${chat.lastMessage || '—'}</span>
+              </div>
+              <div class="chat-meta">
+                <span class="chat-time">${new Date(chat.lastMessageTime || Date.now()).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
+                ${chat.unread ? '<span class="unread-badge">●</span>' : ''}
+              </div>
+            </div>
+          `).join('') : `<p class="empty-state">${i18n.noMessages}</p>`}
+        </div>
+      </div>
+    `;
+  },
+
+  renderChatDetail: (chat, messages) => {
+    const container = document.getElementById('view-container');
+    
+    container.innerHTML = `
+      <div class="chat-detail">
+        <div class="chat-detail-header">
+          <button class="back-btn" data-act="closeChatDetail">←</button>
+          <div class="chat-detail-info">
+            <h3>${chat.name}</h3>
+            <span class="chat-status">${chat.status || i18n.online}</span>
+          </div>
+          <button class="btn-icon" data-act="viewChatInfo">⋮</button>
+        </div>
+
+        <div class="messages-thread">
+          ${messages.map(msg => `
+            <div class="message ${msg.sender === 'self' ? 'sent' : 'received'}">
+              ${msg.sender !== 'self' ? `<div class="msg-avatar"><img src="${msg.avatar || ''}" alt="" /></div>` : ''}
+              <div class="message-bubble">
+                <div class="message-content">${msg.text}</div>
+                <div class="message-time">${new Date(msg.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="chat-input-area">
+          <form data-act="sendMessage" class="message-form">
+            <input type="text" name="text" placeholder="${i18n.typeMessage}" class="message-input" required />
+            <button type="submit" class="btn-send">→</button>
+          </form>
+        </div>
+      </div>
+    `;
+  },
+
+  renderNotificationsView: (notifications) => {
+    const container = document.getElementById('view-container');
+    const unread = notifications.filter(n => !n.read);
+    
+    container.innerHTML = `
+      <div class="notifications-view">
+        <div class="notifications-header">
+          <h2>${i18n.notifications}</h2>
+          ${unread.length ? `<button class="btn-text" data-act="markAllRead">${i18n.markRead}</button>` : ''}
+        </div>
+
+        <div class="notification-list">
+          ${notifications.length ? notifications.map(notif => `
+            <div class="notification-item ${notif.read ? '' : 'unread'}" data-act="dismissNotif" data-id="${notif.id}">
+              <div class="notif-icon">${notif.icon || '🔔'}</div>
+              <div class="notif-content">
+                <span class="notif-title">${notif.title}</span>
+                <span class="notif-message">${notif.message}</span>
+                <span class="notif-time">${new Date(notif.timestamp).toLocaleDateString()}</span>
+              </div>
+              <button class="close-notif">×</button>
+            </div>
+          `).join('') : `<p class="empty-state">${i18n.noNotifications}</p>`}
+        </div>
+      </div>
+    `;
+  }
+};
+
+
+/* Module 7: h_settings.js */
+// ===== SETTINGS & PROFILE VIEW =====
+// User profile edit, preferences, privacy, language, notifications settings, account
+
+const SettingsModule = {
+  renderSettingsView: (user, preferences) => {
+    const container = document.getElementById('view-container');
+    
+    container.innerHTML = `
+      <div class="settings-view">
+        <div class="settings-header">
+          <h2>${i18n.settings}</h2>
+        </div>
+
+        <div class="settings-sections">
+          <!-- Profile Section -->
+          <div class="settings-section">
+            <h3>${i18n.profile}</h3>
+            <form data-act="updateProfile">
+              <div class="form-group">
+                <label>${i18n.name}</label>
+                <input type="text" name="name" value="${user.name || ''}" />
+              </div>
+              <div class="form-group">
+                <label>${i18n.email}</label>
+                <input type="email" name="email" value="${user.email || ''}" readonly />
+              </div>
+              <div class="form-group">
+                <label>${i18n.bio}</label>
+                <textarea name="bio">${user.bio || ''}</textarea>
+              </div>
+              <div class="form-group">
+                <label>${i18n.photo}</label>
+                <input type="file" accept="image/*" name="photo" data-act="uploadProfilePhoto" />
+              </div>
+              <button type="submit" class="btn btn-primary">${i18n.save}</button>
+            </form>
+          </div>
+
+          <!-- Preferences Section -->
+          <div class="settings-section">
+            <h3>${i18n.preferences}</h3>
+            <form data-act="updatePreferences">
+              <div class="form-group">
+                <label>${i18n.language}</label>
+                <select name="language" value="${preferences.language || 'ru'}">
+                  <option value="ru">Русский</option>
+                  <option value="en">English</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>${i18n.theme}</label>
+                <select name="theme" value="${preferences.theme || 'light'}">
+                  <option value="light">${i18n.lightTheme}</option>
+                  <option value="dark">${i18n.darkTheme}</option>
+                </select>
+              </div>
+              <div class="form-group checkbox">
+                <input type="checkbox" id="notif-enable" name="enableNotifications" ${preferences.enableNotifications !== false ? 'checked' : ''} />
+                <label for="notif-enable">${i18n.enableNotifications}</label>
+              </div>
+              <button type="submit" class="btn btn-primary">${i18n.save}</button>
+            </form>
+          </div>
+
+          <!-- Privacy Section -->
+          <div class="settings-section">
+            <h3>${i18n.privacy}</h3>
+            <form data-act="updatePrivacy">
+              <div class="form-group checkbox">
+                <input type="checkbox" id="public-profile" name="publicProfile" ${user.publicProfile ? 'checked' : ''} />
+                <label for="public-profile">${i18n.publicProfile}</label>
+              </div>
+              <div class="form-group checkbox">
+                <input type="checkbox" id="show-stats" name="showStats" ${user.showStats !== false ? 'checked' : ''} />
+                <label for="show-stats">${i18n.showStats}</label>
+              </div>
+              <button type="submit" class="btn btn-primary">${i18n.save}</button>
+            </form>
+          </div>
+
+          <!-- Account Section -->
+          <div class="settings-section">
+            <h3>${i18n.account}</h3>
+            <div class="account-actions">
+              <button class="btn btn-secondary" data-act="changePassword">${i18n.changePassword}</button>
+              <button class="btn btn-secondary" data-act="logout">${i18n.logout}</button>
+              <button class="btn btn-danger" data-act="deleteAccount">${i18n.deleteAccount}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+};
+
+// ===== ONBOARDING FLOW =====
+// New user setup: profile, goals, preferences
+
+const OnboardingModule = {
+  currentStep: 0,
+  steps: ['welcome', 'profile', 'goals', 'preferences', 'complete'],
+
+  renderOnboarding: (user) => {
+    const container = document.getElementById('view-container');
+    const step = OnboardingModule.steps[OnboardingModule.currentStep];
+
+    container.innerHTML = `
+      <div class="onboarding-view">
+        <div class="onboarding-progress">
+          <div class="progress-bar" style="width: ${((OnboardingModule.currentStep + 1) / OnboardingModule.steps.length) * 100}%"></div>
+        </div>
+        <div class="onboarding-content">
+          ${OnboardingModule.renderStep(step, user)}
+        </div>
+      </div>
+    `;
+  },
+
+  renderStep: (step, user) => {
+    switch (step) {
+      case 'welcome':
+        return `
+          <div class="onboarding-step">
+            <div class="step-icon">💪</div>
+            <h2>${i18n.welcomeToFitHub}</h2>
+            <p>${i18n.onboardingWelcome}</p>
+            <button class="btn btn-primary" data-act="onboardingNext">${i18n.continue}</button>
+          </div>
+        `;
+      case 'profile':
+        return `
+          <div class="onboarding-step">
+            <h2>${i18n.setupProfile}</h2>
+            <form data-act="onboardingProfile">
+              <div class="form-group">
+                <label>${i18n.name}</label>
+                <input type="text" name="name" required />
+              </div>
+              <div class="form-group">
+                <label>${i18n.age}</label>
+                <input type="number" name="age" min="13" max="120" required />
+              </div>
+              <div class="form-group">
+                <label>${i18n.weight} (kg)</label>
+                <input type="number" name="weight" min="30" max="300" step="0.1" required />
+              </div>
+              <button type="submit" class="btn btn-primary">${i18n.continue}</button>
+            </form>
+          </div>
+        `;
+      case 'goals':
+        return `
+          <div class="onboarding-step">
+            <h2>${i18n.yourGoals}</h2>
+            <form data-act="onboardingGoals">
+              <div class="goal-options">
+                <label class="goal-option">
+                  <input type="radio" name="goal" value="muscle" required />
+                  <span>🏋️ ${i18n.buildMuscle}</span>
+                </label>
+                <label class="goal-option">
+                  <input type="radio" name="goal" value="cardio" />
+                  <span>🏃 ${i18n.improveCardio}</span>
+                </label>
+                <label class="goal-option">
+                  <input type="radio" name="goal" value="weight" />
+                  <span>⚖️ ${i18n.loseWeight}</span>
+                </label>
+                <label class="goal-option">
+                  <input type="radio" name="goal" value="general" />
+                  <span>🎯 ${i18n.stayActive}</span>
+                </label>
+              </div>
+              <button type="submit" class="btn btn-primary">${i18n.continue}</button>
+            </form>
+          </div>
+        `;
+      case 'preferences':
+        return `
+          <div class="onboarding-step">
+            <h2>${i18n.preferences}</h2>
+            <form data-act="onboardingPreferences">
+              <div class="form-group">
+                <label>${i18n.language}</label>
+                <select name="language" required>
+                  <option value="ru">Русский</option>
+                  <option value="en">English</option>
+                </select>
+              </div>
+              <div class="form-group checkbox">
+                <input type="checkbox" id="notif" name="notifications" checked />
+                <label for="notif">${i18n.enableNotifications}</label>
+              </div>
+              <button type="submit" class="btn btn-primary">${i18n.continue}</button>
+            </form>
+          </div>
+        `;
+      case 'complete':
+        return `
+          <div class="onboarding-step">
+            <div class="step-icon">🎉</div>
+            <h2>${i18n.allSet}</h2>
+            <p>${i18n.onboardingComplete}</p>
+            <button class="btn btn-primary btn-large" data-act="finishOnboarding">${i18n.startExercising}</button>
+          </div>
+        `;
+      default:
+        return '';
+    }
+  }
+};
+
+
+/* Module 8: i_handlers.js */
+// ===== EVENT HANDLERS & STATE MANAGEMENT =====
+// Global event delegation, form submissions, data persistence
+
+const StateManager = {
+  state: {
+    user: null,
+    nutrients: { mealHistory: [], targets: {} },
+    sessions: [],
+    chats: [],
+    notifications: [],
+    activities: [],
+    bookmarks: [],
+    followers: [],
+    kudos: {}
+  },
+
+  async init() {
+    // Load persisted state from localStorage
+    const stored = localStorage.getItem('fitHub_state');
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        Object.assign(StateManager.state, parsed);
+      } catch (e) {
+        console.error('Failed to restore state:', e);
+      }
+    }
+    // Load from Supabase in production
+    // For now: use mock data + localStorage
+  },
+
+  save() {
+    localStorage.setItem('fitHub_state', JSON.stringify(StateManager.state));
+  }
+};
+
+// Global event delegation
+document.addEventListener('click', async (e) => {
+  const action = e.target.closest('[data-act]')?.dataset.act;
+  const target = e.target.closest('[data-act]');
+  
+  if (!action) return;
+
+  try {
+    switch (action) {
+      // Navigation
+      case 'navHome': Router.goTo('feed'); break;
+      case 'navActivity': Router.goTo('activity'); break;
+      case 'navNutrition': Router.goTo('nutrition'); break;
+      case 'navSessions': Router.goTo('sessions'); break;
+      case 'navLibrary': Router.goTo('library'); break;
+      case 'navMessages': Router.goTo('messages'); break;
+      case 'navSettings': Router.goTo('settings'); break;
+
+      // Activity actions
+      case 'logActivity':
+        const form = e.target.closest('form');
+        if (form) {
+          const data = new FormData(form);
+          const activity = Object.fromEntries(data);
+          StateManager.state.activities.push({
+            id: 'act_' + Date.now(),
+            ...activity,
+            timestamp: new Date(),
+            userId: StateManager.state.user?.id
+          });
+          ActivityModule.hydrate(StateManager.state.activities, StateManager.state.kudos);
+          StateManager.save();
+          Router.goTo('activity');
+        }
+        break;
+
+      case 'shareActivity':
+        const actId = target.dataset.id;
+        const actToShare = StateManager.state.activities.find(a => a.id === actId);
+        if (actToShare) {
+          alert(`📤 Shared: ${actToShare.name} (${actToShare.distance}km in ${actToShare.duration}')`);
+        }
+        break;
+
+      // Nutrition actions
+      case 'uploadFoodPhoto':
+        const photoInput = document.getElementById('food-photo');
+        if (photoInput?.files[0]) {
+          const foods = NutritionModule.detectFood(photoInput.files[0]);
+          const resultDiv = document.getElementById('scanner-result');
+          if (resultDiv) {
+            resultDiv.classList.remove('hidden');
+            resultDiv.querySelector('.food-items').innerHTML = foods.map(f => `
+              <div class="food-item">
+                <span>${f.name} (${f.portion})</span>
+                <span>${f.calories}kcal</span>
+              </div>
+            `).join('');
+          }
+        }
+        break;
+
+      case 'saveMeal':
+        const mealDate = new Date().toISOString().split('T')[0];
+        const foods = Array.from(document.querySelectorAll('.food-item')).map(el => ({
+          name: el.textContent.split('(')[0].trim(),
+          calories: parseInt(el.textContent.match(/\d+(?=kcal)/)?.[0] || 0)
+        }));
+        if (!StateManager.state.nutrients.mealHistory.find(d => d.date === mealDate)) {
+          StateManager.state.nutrients.mealHistory.push({ date: mealDate, meals: [] });
+        }
+        const day = StateManager.state.nutrients.mealHistory.find(d => d.date === mealDate);
+        day.meals.push(...foods.map(f => ({...f, time: new Date().toLocaleTimeString()})));
+        StateManager.save();
+        Router.goTo('nutrition');
+        break;
+
+      case 'saveNutritionTargets':
+        if (e.target.tagName === 'FORM' || e.target.closest('form')) {
+          e.preventDefault();
+          const form = e.target.tagName === 'FORM' ? e.target : e.target.closest('form');
+          const data = new FormData(form);
+          StateManager.state.nutrients.targets = {
+            calories: parseInt(data.get('calorieTarget')),
+            protein: parseInt(data.get('proteinTarget')),
+            carbs: parseInt(data.get('carbsTarget')),
+            fat: parseInt(data.get('fatTarget'))
+          };
+          StateManager.save();
+          alert(i18n.saved);
+        }
+        break;
+
+      // Sessions actions
+      case 'startNewSession':
+        SessionModule.startNewSession();
+        StateManager.state.sessions.unshift(SessionModule.currentSession);
+        StateManager.save();
+        SessionModule.renderSessionsView(StateManager.state.sessions);
+        break;
+
+      case 'markExerciseDone':
+        SessionModule.markExerciseDone(SessionModule.currentSession?.id);
+        SessionModule.renderSessionsView(StateManager.state.sessions);
+        break;
+
+      case 'toggleRestOverlay':
+        SessionModule.toggleRestOverlay();
+        SessionModule.startRestTimer();
+        break;
+
+      case 'endSession':
+        SessionModule.currentSession.status = 'completed';
+        SessionModule.currentSession.duration = 45; // Calculate real duration
+        StateManager.state.sessions[0] = SessionModule.currentSession;
+        StateManager.save();
+        SessionModule.renderSessionsView(StateManager.state.sessions);
+        break;
+
+      // Messages & Chat
+      case 'openChat':
+        const chatId = target.dataset.id;
+        const chat = StateManager.state.chats.find(c => c.id === chatId);
+        if (chat) {
+          const messages = [
+            { sender: 'other', text: 'Hey! How was your workout?', timestamp: Date.now() - 300000, avatar: chat.avatar },
+            { sender: 'self', text: 'Great! Crushed the leg day 💪', timestamp: Date.now() - 240000 }
+          ];
+          MessagingModule.renderChatDetail(chat, messages);
+        }
+        break;
+
+      case 'sendMessage':
+        if (e.target.tagName === 'FORM' || e.target.closest('form')) {
+          e.preventDefault();
+          const msgForm = e.target.tagName === 'FORM' ? e.target : e.target.closest('form');
+          const text = msgForm.querySelector('input[name="text"]').value;
+          if (text.trim()) {
+            // Send to Supabase or store locally
+            StateManager.save();
+            msgForm.reset();
+            alert('✓ ' + i18n.sent);
+          }
+        }
+        break;
+
+      case 'dismissNotif':
+        const notifId = target.dataset.id;
+        StateManager.state.notifications = StateManager.state.notifications.filter(n => n.id !== notifId);
+        StateManager.save();
+        MessagingModule.renderNotificationsView(StateManager.state.notifications);
+        break;
+
+      // Settings & Profile
+      case 'updateProfile':
+        if (e.target.tagName === 'FORM' || e.target.closest('form')) {
+          e.preventDefault();
+          const profileForm = e.target.tagName === 'FORM' ? e.target : e.target.closest('form');
+          const data = new FormData(profileForm);
+          StateManager.state.user = { ...StateManager.state.user, ...Object.fromEntries(data) };
+          StateManager.save();
+          alert(i18n.saved);
+        }
+        break;
+
+      case 'logout':
+        if (confirm(i18n.confirmLogout)) {
+          StateManager.state.user = null;
+          StateManager.save();
+          Router.goTo('login');
+        }
+        break;
+
+      // Onboarding
+      case 'onboardingNext':
+        OnboardingModule.currentStep++;
+        OnboardingModule.renderOnboarding(StateManager.state.user);
+        break;
+
+      case 'onboardingProfile':
+        if (e.target.tagName === 'FORM') {
+          e.preventDefault();
+          const profData = Object.fromEntries(new FormData(e.target));
+          StateManager.state.user = { ...StateManager.state.user, ...profData };
+          OnboardingModule.currentStep++;
+          OnboardingModule.renderOnboarding(StateManager.state.user);
+        }
+        break;
+
+      case 'finishOnboarding':
+        StateManager.state.user.onboarded = true;
+        StateManager.save();
+        Router.goTo('feed');
+        break;
+
+      default:
+        console.log('Unhandled action:', action);
+    }
+  } catch (error) {
+    console.error('Handler error:', error);
+  }
+});
+
+// Form submission for custom forms
+document.addEventListener('submit', (e) => {
+  // Already handled by click delegation
+}, true);
+
 </script>
 
 <!-- =============================================================================
