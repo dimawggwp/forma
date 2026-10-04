@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#0A0A0A" />
-<title>FORMA — тренировки, питание и сообщество</title>
+<title>FITHUB — тренировки, питание и сообщество</title>
 <meta name="description" content="FORMA: социальная сеть для спорта с ИИ-тренером, счётчиком КБЖУ по фото, тредами и библиотекой упражнений." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -746,7 +746,7 @@ select.inp option{background:#151515}
 setTimeout(() => {
   if (!window.supabase) {
     const bd = document.body || document.documentElement;
-    if (!bd.innerHTML.includes('FORMA.')) {
+    if (!bd.innerHTML.includes('FITHUB.')) {
       bd.innerHTML = '<div style="color:#fff;padding:40px;font-family:system-ui;background:#0A0A0A;min-height:100vh"><h1 style="margin:0;color:#D4FF3F">⚠️ Не работает</h1><p style="color:#888;margin-top:10px">CDN не загрузился. Попробуй:</p><ul style="color:#888"><li>Закрой и открой снова</li><li>Проверь интернет</li><li>Используй демо-режим после загрузки</li></ul><button onclick="location.reload()" style="background:#D4FF3F;color:#000;border:0;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:600;margin-top:20px">Обновить</button></div>';
     }
   }
@@ -767,7 +767,7 @@ const CONFIG = {
   FOOD_SCAN_FN: 'food-scan',
   BUCKET_MEDIA: 'media',
   BUCKET_MATERIALS: 'materials',
-  APP_NAME: 'FORMA'
+  APP_NAME: 'FITHUB'
 };
 
 /* =============================================================================
@@ -776,10 +776,10 @@ const CONFIG = {
 const I18N = {
 ru:{
   feed:'Лента', explore:'Поиск', coach:'ИИ-тренер', nutrition:'Питание', workouts:'Тренировки', library:'Библиотека', messages:'Сообщения', profile:'Профиль', settings:'Настройки', more:'Ещё', newThread:'Новый тред',
-  authTitle:'Вход в FORMA', authLead:'Тренировки, питание и люди, которые двигаются вместе с тобой.',
+  authTitle:'Вход в FITHUB', authLead:'Тренировки, питание и люди, которые двигаются вместе с тобой.',
   google:'Продолжить с Google', apple:'Продолжить с Apple', phone:'По номеру телефона', email:'Почта', or:'или',
   login:'Вход', signup:'Регистрация', password:'Пароль', name:'Имя', continue:'Продолжить', sendCode:'Получить код', verify:'Подтвердить', phoneNum:'Номер телефона', codeSent:'Код отправлен на', changeNum:'Изменить номер', back:'Назад',
-  demo:'Посмотреть без регистрации —', demoB:'демо-режим', legal:'Продолжая, вы соглашаетесь с условиями использования и политикой конфиденциальности FORMA.',
+  demo:'Посмотреть без регистрации —', demoB:'демо-режим', legal:'Продолжая, вы соглашаетесь с условиями использования и политикой конфиденциальности FITHUB.',
   checkEmail:'Проверьте почту, чтобы подтвердить аккаунт', authErr:'Ошибка входа', providerOff:'Провайдер не включён в Supabase → Authentication → Providers',
   heroA:'Тренируйся', heroB:'с умом.', heroC:'вместе.',
   f1:'ИИ-тренер', f1s:'Отвечает принципами ACSM, NSCA и ISSN, а не догадками.',
@@ -816,10 +816,10 @@ ru:{
 },
 en:{
   feed:'Feed', explore:'Search', coach:'AI Coach', nutrition:'Nutrition', workouts:'Workouts', library:'Library', messages:'Messages', profile:'Profile', settings:'Settings', more:'More', newThread:'New thread',
-  authTitle:'Sign in to FORMA', authLead:'Training, food and the people who move with you.',
+  authTitle:'Sign in to FITHUB', authLead:'Training, food and the people who move with you.',
   google:'Continue with Google', apple:'Continue with Apple', phone:'Use phone number', email:'Email', or:'or',
   login:'Sign in', signup:'Sign up', password:'Password', name:'Name', continue:'Continue', sendCode:'Send code', verify:'Verify', phoneNum:'Phone number', codeSent:'Code sent to', changeNum:'Change number', back:'Back',
-  demo:'Just looking?', demoB:'Try the demo', legal:'By continuing you agree to the FORMA Terms of Use and Privacy Policy.',
+  demo:'Just looking?', demoB:'Try the demo', legal:'By continuing you agree to the FITHUB Terms of Use and Privacy Policy.',
   checkEmail:'Check your inbox to confirm your account', authErr:'Sign-in failed', providerOff:'Provider is not enabled in Supabase → Authentication → Providers',
   heroA:'Train', heroB:'smarter.', heroC:'together.',
   f1:'AI coach', f1s:'Answers with ACSM, NSCA and ISSN principles, not guesswork.',
@@ -1096,7 +1096,7 @@ function seedLocal(){
     { id:'u_sofia', username:'sofia.nutri', name:'Sofia Mendes', bio:'Sports dietitian · ISSN member\nFood first, supplements second', verified:true, goal:'health', role:'user' },
     { id:'u_tim', username:'tim.hyper', name:'Тимур Алиев', bio:'Гипертрофия, 4 года натурально. Сплит верх/низ', goal:'hyper', role:'user' },
   ];
-  const me = { id:'me', username:'you', name:L('Вы','You'), bio:L('Новенький в FORMA 👋','New to FORMA 👋'), goal:'hyper', sex:'male', age:26, height:180, weight:78, activity:1.55, role:'admin', verified:false };
+  const me = { id:'me', username:'you', name:L('Вы','You'), bio:L('Новенький в FITHUB 👋','New to FITHUB 👋'), goal:'hyper', sex:'male', age:26, height:180, weight:78, activity:1.55, role:'admin', verified:false };
   d.profiles = [me, ...users].map(u => ({ sex:'male', age:28, height:175, weight:75, activity:1.55, avatar_url:'', created_at:new Date(now - 90*24*H).toISOString(), ...u }));
   const P = (id, user_id, content, tag, hAgo, parent_id=null) => ({ id, user_id, content, tag, parent_id, image_url:'', created_at:new Date(now - hAgo*H).toISOString() });
   d.posts = [
@@ -1599,7 +1599,7 @@ function shellView(){
   return `
   <div class="shell">
     <aside class="rail">
-      <a class="logo" href="#/feed" aria-label="FORMA">F<b>.</b></a>
+      <a class="logo" href="#/feed" aria-label="FITHUB">F<b>.</b></a>
       <nav>
         ${nav.slice(0,2).map(([n,i]) => railBtn(n,i)).join('')}
         <button class="rbtn compose" data-act="compose" aria-label="${t('newThread')}">${icon('plus')}<span class="tip">${t('newThread')}</span></button>
@@ -1612,7 +1612,7 @@ function shellView(){
     </aside>
     <main class="col">
       <div class="mtop">
-        <a class="logo" href="#/feed" style="width:auto;height:auto;font-size:24px">FORMA<b>.</b></a>
+        <a class="logo" href="#/feed" style="width:auto;height:auto;font-size:24px">FITHUB<b>.</b></a>
         <div class="row" style="gap:4px">
           <button class="ibtn" data-act="compose">${icon('plus')}</button>
           <a class="ibtn" href="#/messages" style="position:relative">${icon('chat')}${S.unread ? '<span class="dot" style="position:absolute;top:8px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--accent)"></span>' : ''}</a>
@@ -1703,7 +1703,7 @@ function authView(){
   <div class="auth">
     <div class="lang-sw"><button class="${LANG==='ru'?'on':''}" data-act="setLang" data-l="ru">RU</button><button class="${LANG==='en'?'on':''}" data-act="setLang" data-l="en">EN</button></div>
     <section class="auth-left">
-      <div class="brand">FORMA<b>.</b></div>
+      <div class="brand">FITHUB<b>.</b></div>
       <div class="pulse-wrap" aria-hidden="true">
         <svg viewBox="0 0 640 640">
           <g class="orbit" stroke="#2a2a2a" fill="none"><circle cx="320" cy="320" r="300"/><circle cx="320" cy="320" r="230" stroke-dasharray="2 8"/><circle cx="320" cy="320" r="160"/><circle cx="620" cy="320" r="5" fill="#D4FF3F" stroke="none"/><circle cx="90" cy="320" r="3" fill="#F4F4F2" stroke="none"/></g>
@@ -2508,7 +2508,7 @@ document.addEventListener('click', e => {
    ============================================================================= */
 // Автоматический старт через 0.5с, даже если CDN зависла
 setTimeout(() => {
-  if (!S.user && !S.demo && !document.body.innerHTML.includes('FORMA.')){
+  if (!S.user && !S.demo && !document.body.innerHTML.includes('FITHUB.')){
     startDemo();
   }
 }, 500);
